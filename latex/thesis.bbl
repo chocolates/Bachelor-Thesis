@@ -1,0 +1,424 @@
+\begin{thebibliography}{49}\setlength{\baselineskip}{20bp plus 2bp minus
+  1bp}\setlength{\itemsep}{0bp}\setlength{\parskip}{0pt}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\ifnum \value{NAT@ctr}=9 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=99 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=999 \addtolength{\labelwidth}{1em} \fi\bibitem[Aggarwal and
+  Reddy(2013)]{aggarwal2013data}
+C.~C. Aggarwal, C.~K. Reddy.
+\newblock Data clustering: algorithms and applications[M].
+\newblock CRC Press, 2013
+
+\ifnum \value{NAT@ctr}=9 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=99 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=999 \addtolength{\labelwidth}{1em} \fi\bibitem[Han et
+  al.(2006)]{han2006data}
+J.~Han, M.~Kamber, J.~Pei.
+\newblock Data mining, southeast asia edition: Concepts and techniques[M].
+\newblock Morgan kaufmann, 2006
+
+\ifnum \value{NAT@ctr}=9 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=99 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=999 \addtolength{\labelwidth}{1em} \fi\bibitem[Witten and
+  Frank(2005)]{witten2005data}
+I.~H. Witten, E.~Frank.
+\newblock Data mining: Practical machine learning tools and techniques[M].
+\newblock Morgan Kaufmann, 2005
+
+\ifnum \value{NAT@ctr}=9 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=99 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=999 \addtolength{\labelwidth}{1em} \fi\bibitem[Fayyad et
+  al.(1996)]{fayyad1996knowledge}
+U.~M. Fayyad, G.~Piatetsky-Shapiro, P.~Smyth, et al.
+\newblock Knowledge discovery and data mining: Towards a unifying
+  framework.[M].
+\newblock 1996, 82--88
+
+\ifnum \value{NAT@ctr}=9 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=99 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=999 \addtolength{\labelwidth}{1em}
+  \fi\bibitem[Shao(2011)]{shao2011synchronization}
+J.~Shao.
+\newblock Synchronization inspired data mining[M].
+\newblock 2011
+
+\ifnum \value{NAT@ctr}=9 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=99 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=999 \addtolength{\labelwidth}{1em} \fi\bibitem[Agrawal et
+  al.(1994)]{agrawal1994fast}
+R.~Agrawal, R.~Srikant, et al.
+\newblock Fast algorithms for mining association rules[M].
+\newblock 1994, 487--499
+
+\ifnum \value{NAT@ctr}=9 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=99 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=999 \addtolength{\labelwidth}{1em} \fi\bibitem[Han et
+  al.(2000)]{han2000mining}
+J.~Han, J.~Pei, Y.~Yin.
+\newblock Mining frequent patterns without candidate generation[M].
+\newblock 2000, 1--12
+
+\ifnum \value{NAT@ctr}=9 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=99 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=999 \addtolength{\labelwidth}{1em} \fi\bibitem[Jain et
+  al.(1999)]{jain1999data}
+A.~K. Jain, M.~N. Murty, P.~J. Flynn.
+\newblock Data clustering: a review[J].
+\newblock ACM computing surveys (CSUR), 1999, 31(3):264--323
+
+\ifnum \value{NAT@ctr}=9 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=99 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=999 \addtolength{\labelwidth}{1em} \fi\bibitem[Li et
+  al.(2010)]{li2010swarm}
+Z.~Li, B.~Ding, J.~Han, et al.
+\newblock Swarm: Mining relaxed temporal moving object clusters[J].
+\newblock Proceedings of the VLDB Endowment, 2010, 3(1-2):723--734
+
+\ifnum \value{NAT@ctr}=9 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=99 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=999 \addtolength{\labelwidth}{1em} \fi\bibitem[Giannotti et
+  al.(2007)]{giannotti2007trajectory}
+F.~Giannotti, M.~Nanni, F.~Pinelli, et al.
+\newblock Trajectory pattern mining[M].
+\newblock 2007, 330--339
+
+\ifnum \value{NAT@ctr}=9 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=99 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=999 \addtolength{\labelwidth}{1em} \fi\bibitem[Zheng and
+  Zhou(2011)]{zheng2011computing}
+Y.~Zheng, X.~Zhou.
+\newblock Computing with spatial trajectories[M].
+\newblock Springer Science \& Business Media, 2011
+
+\ifnum \value{NAT@ctr}=9 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=99 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=999 \addtolength{\labelwidth}{1em} \fi\bibitem[Wang et
+  al.(2013)]{wang2013effectiveness}
+H.~Wang, H.~Su, K.~Zheng, et al.
+\newblock An effectiveness study on trajectory similarity measures[M].
+\newblock 2013, 13--22
+
+\ifnum \value{NAT@ctr}=9 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=99 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=999 \addtolength{\labelwidth}{1em} \fi\bibitem[Song et
+  al.(2010)]{song2010limits}
+C.~Song, Z.~Qu, N.~Blumm, et al.
+\newblock Limits of predictability in human mobility[J].
+\newblock Science, 2010, 327(5968):1018--1021
+
+\ifnum \value{NAT@ctr}=9 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=99 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=999 \addtolength{\labelwidth}{1em} \fi\bibitem[Yan et
+  al.(2013)]{yan2013diversity}
+X.-Y. Yan, X.-P. Han, B.-H. Wang, et al.
+\newblock Diversity of individual mobility patterns and emergence of aggregated
+  scaling laws[J].
+\newblock Scientific reports, 2013, 3
+
+\ifnum \value{NAT@ctr}=9 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=99 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=999 \addtolength{\labelwidth}{1em} \fi\bibitem[Keogh and
+  Pazzani(2001)]{keogh2001derivative}
+E.~J. Keogh, M.~J. Pazzani.
+\newblock Derivative dynamic time warping.[M].
+\newblock 2001, 5--7
+
+\ifnum \value{NAT@ctr}=9 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=99 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=999 \addtolength{\labelwidth}{1em}
+  \fi\bibitem[Senin(2008)]{senin2008dynamic}
+P.~Senin.
+\newblock Dynamic time warping algorithm review[J].
+\newblock Information and Computer Science Department University of Hawaii at
+  Manoa Honolulu, USA, 2008:1--23
+
+\ifnum \value{NAT@ctr}=9 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=99 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=999 \addtolength{\labelwidth}{1em} \fi\bibitem[Salvador and
+  Chan(2007)]{salvador2007toward}
+S.~Salvador, P.~Chan.
+\newblock Toward accurate dynamic time warping in linear time and space[J].
+\newblock Intelligent Data Analysis, 2007, 11(5):561--580
+
+\ifnum \value{NAT@ctr}=9 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=99 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=999 \addtolength{\labelwidth}{1em}
+  \fi\bibitem[Itakura(1975)]{itakura1975minimum}
+F.~Itakura.
+\newblock Minimum prediction residual principle applied to speech
+  recognition[J].
+\newblock Acoustics, Speech and Signal Processing, IEEE Transactions on, 1975,
+  23(1):67--72
+
+\ifnum \value{NAT@ctr}=9 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=99 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=999 \addtolength{\labelwidth}{1em} \fi\bibitem[Chen et
+  al.(2013)]{chen2013dynamic}
+P.~Chen, J.~Gu, D.~Zhu, et al.
+\newblock A dynamic time warping based algorithm for trajectory matching in
+  lbs.[J].
+\newblock International Journal of Database Theory \& Application, 2013, 6(3)
+
+\ifnum \value{NAT@ctr}=9 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=99 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=999 \addtolength{\labelwidth}{1em} \fi\bibitem[Buzan et
+  al.(2004)]{buzan2004extraction}
+D.~Buzan, S.~Sclaroff, G.~Kollios.
+\newblock Extraction and clustering of motion trajectories in video[M].
+\newblock 2004, 521--524
+
+\ifnum \value{NAT@ctr}=9 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=99 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=999 \addtolength{\labelwidth}{1em} \fi\bibitem[Jurafsky and
+  Martin(2000)]{jurafsky2000speech}
+D.~Jurafsky, J.~H. Martin.
+\newblock Speech \& language processing[M].
+\newblock Pearson Education India, 2000
+
+\ifnum \value{NAT@ctr}=9 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=99 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=999 \addtolength{\labelwidth}{1em} \fi\bibitem[Needleman and
+  Wunsch(1970)]{needleman1970general}
+S.~B. Needleman, C.~D. Wunsch.
+\newblock A general method applicable to the search for similarities in the
+  amino acid sequence of two proteins[J].
+\newblock Journal of molecular biology, 1970, 48(3):443--453
+
+\ifnum \value{NAT@ctr}=9 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=99 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=999 \addtolength{\labelwidth}{1em} \fi\bibitem[Yuan et
+  al.(2011)]{yuan2011driving}
+J.~Yuan, Y.~Zheng, X.~Xie, et al.
+\newblock Driving with knowledge from the physical world[M].
+\newblock 2011, 316--324
+
+\ifnum \value{NAT@ctr}=9 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=99 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=999 \addtolength{\labelwidth}{1em}
+  \fi\bibitem[Fortunato(2010)]{fortunato2010community}
+S.~Fortunato.
+\newblock Community detection in graphs[J].
+\newblock Physics Reports, 2010, 486(3):75--174
+
+\ifnum \value{NAT@ctr}=9 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=99 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=999 \addtolength{\labelwidth}{1em} \fi\bibitem[Shi and
+  Malik(2000)]{shi2000normalized}
+J.~Shi, J.~Malik.
+\newblock Normalized cuts and image segmentation[J].
+\newblock Pattern Analysis and Machine Intelligence, IEEE Transactions on,
+  2000, 22(8):888--905
+
+\ifnum \value{NAT@ctr}=9 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=99 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=999 \addtolength{\labelwidth}{1em} \fi\bibitem[Fortunato and
+  Barth{\'e}lemy(2007)]{fortunato2007resolution}
+S.~Fortunato, M.~Barth{\'e}lemy.
+\newblock Resolution limit in community detection[J].
+\newblock Proceedings of the National Academy of Sciences, 2007, 104(1):36--41
+
+\ifnum \value{NAT@ctr}=9 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=99 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=999 \addtolength{\labelwidth}{1em} \fi\bibitem[James et
+  al.(2014)]{james2014sustainable}
+P.~James, Y.~Nadarajah, K.~Haive, et al.
+\newblock Sustainable communities, sustainable development: Other paths for
+  papua new guinea[J].
+\newblock Hawaiian Journal of History, 2014, 48
+
+\ifnum \value{NAT@ctr}=9 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=99 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=999 \addtolength{\labelwidth}{1em}
+  \fi\bibitem[Schaeffer(2007)]{schaeffer2007graph}
+S.~E. Schaeffer.
+\newblock Graph clustering[J].
+\newblock Computer Science Review, 2007, 1(1):27--64
+
+\ifnum \value{NAT@ctr}=9 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=99 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=999 \addtolength{\labelwidth}{1em} \fi\bibitem[Wu and
+  Leahy(1993)]{wu1993optimal}
+Z.~Wu, R.~Leahy.
+\newblock An optimal graph theoretic approach to data clustering: Theory and
+  its application to image segmentation[J].
+\newblock Pattern Analysis and Machine Intelligence, IEEE Transactions on,
+  1993, 15(11):1101--1113
+
+\ifnum \value{NAT@ctr}=9 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=99 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=999 \addtolength{\labelwidth}{1em}
+  \fi\bibitem[Von~Luxburg(2007)]{von2007tutorial}
+U.~Von~Luxburg.
+\newblock A tutorial on spectral clustering[J].
+\newblock Statistics and computing, 2007, 17(4):395--416
+
+\ifnum \value{NAT@ctr}=9 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=99 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=999 \addtolength{\labelwidth}{1em}
+  \fi\bibitem[Newman(2006)]{newman2006modularity}
+M.~E. Newman.
+\newblock Modularity and community structure in networks[J].
+\newblock Proceedings of the National Academy of Sciences, 2006,
+  103(23):8577--8582
+
+\ifnum \value{NAT@ctr}=9 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=99 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=999 \addtolength{\labelwidth}{1em}
+  \fi\bibitem[Newman(2004)]{newman2004fast}
+M.~E. Newman.
+\newblock Fast algorithm for detecting community structure in networks[J].
+\newblock Physical review E, 2004, 69(6):066133
+
+\ifnum \value{NAT@ctr}=9 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=99 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=999 \addtolength{\labelwidth}{1em} \fi\bibitem[Blondel et
+  al.(2008)]{blondel2008fast}
+V.~D. Blondel, J.-L. Guillaume, R.~Lambiotte, et al.
+\newblock Fast unfolding of communities in large networks[J].
+\newblock Journal of Statistical Mechanics: Theory and Experiment, 2008,
+  2008(10):P10008
+
+\ifnum \value{NAT@ctr}=9 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=99 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=999 \addtolength{\labelwidth}{1em} \fi\bibitem[Rosvall and
+  Bergstrom(2008)]{rosvall2008maps}
+M.~Rosvall, C.~T. Bergstrom.
+\newblock Maps of random walks on complex networks reveal community
+  structure[J].
+\newblock Proceedings of the National Academy of Sciences, 2008,
+  105(4):1118--1123
+
+\ifnum \value{NAT@ctr}=9 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=99 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=999 \addtolength{\labelwidth}{1em} \fi\bibitem[Karypis and
+  Kumar(1998){\natexlab{a}}]{karypis1998fast}
+G.~Karypis, V.~Kumar.
+\newblock A fast and high quality multilevel scheme for partitioning irregular
+  graphs[J].
+\newblock SIAM Journal on scientific Computing, 1998, 20(1):359--392
+
+\ifnum \value{NAT@ctr}=9 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=99 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=999 \addtolength{\labelwidth}{1em} \fi\bibitem[Karypis and
+  Kumar(1998){\natexlab{b}}]{karypis1998multilevelk}
+G.~Karypis, V.~Kumar.
+\newblock Multilevelk-way partitioning scheme for irregular graphs[J].
+\newblock Journal of Parallel and Distributed computing, 1998, 48(1):96--129
+
+\ifnum \value{NAT@ctr}=9 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=99 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=999 \addtolength{\labelwidth}{1em}
+  \fi\bibitem[Van~Dongen(2000)]{van2000cluster}
+S.~Van~Dongen.
+\newblock A cluster algorithm for graphs[J].
+\newblock Report-Information systems, 2000(10):1--40
+
+\ifnum \value{NAT@ctr}=9 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=99 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=999 \addtolength{\labelwidth}{1em} \fi\bibitem[Hennig and
+  Hausdorf(2006)]{hennig2006design}
+C.~Hennig, B.~Hausdorf.
+\newblock Design of dissimilarity measures: A new dissimilarity between species
+  distribution areas[M].
+\newblock Springer, 2006, 29--37
+
+\ifnum \value{NAT@ctr}=9 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=99 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=999 \addtolength{\labelwidth}{1em} \fi\bibitem[Strehl and
+  Ghosh(2003)]{strehl2003cluster}
+A.~Strehl, J.~Ghosh.
+\newblock Cluster ensembles---a knowledge reuse framework for combining
+  multiple partitions[J].
+\newblock The Journal of Machine Learning Research, 2003, 3:583--617
+
+\ifnum \value{NAT@ctr}=9 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=99 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=999 \addtolength{\labelwidth}{1em}
+  \fi\bibitem[Rand(1971)]{rand1971objective}
+W.~M. Rand.
+\newblock Objective criteria for the evaluation of clustering methods[J].
+\newblock Journal of the American Statistical association, 1971,
+  66(336):846--850
+
+\ifnum \value{NAT@ctr}=9 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=99 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=999 \addtolength{\labelwidth}{1em} \fi\bibitem[Lancichinetti
+  et al.(2008)]{lancichinetti2008benchmark}
+A.~Lancichinetti, S.~Fortunato, F.~Radicchi.
+\newblock Benchmark graphs for testing community detection algorithms[J].
+\newblock Physical review E, 2008, 78(4):046110
+
+\ifnum \value{NAT@ctr}=9 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=99 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=999 \addtolength{\labelwidth}{1em}
+  \fi\bibitem[Zachary(1977)]{zachary1977information}
+W.~W. Zachary.
+\newblock An information flow model for conflict and fission in small
+  groups[J].
+\newblock Journal of anthropological research, 1977:452--473
+
+\ifnum \value{NAT@ctr}=9 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=99 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=999 \addtolength{\labelwidth}{1em} \fi\bibitem[Girvan and
+  Newman(2002)]{girvan2002community}
+M.~Girvan, M.~E. Newman.
+\newblock Community structure in social and biological networks[J].
+\newblock Proceedings of the National Academy of Sciences, 2002,
+  99(12):7821--7826
+
+\ifnum \value{NAT@ctr}=9 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=99 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=999 \addtolength{\labelwidth}{1em} \fi\bibitem[Yang and
+  Leskovec(2015)]{yang2015defining}
+J.~Yang, J.~Leskovec.
+\newblock Defining and evaluating network communities based on ground-truth[J].
+\newblock Knowledge and Information Systems, 2015, 42(1):181--213
+
+\ifnum \value{NAT@ctr}=9 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=99 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=999 \addtolength{\labelwidth}{1em} \fi\bibitem[Leskovec et
+  al.(2007)]{leskovec2007graph}
+J.~Leskovec, J.~Kleinberg, C.~Faloutsos.
+\newblock Graph evolution: Densification and shrinking diameters[J].
+\newblock ACM Transactions on Knowledge Discovery from Data (TKDD), 2007,
+  1(1):2
+
+\ifnum \value{NAT@ctr}=9 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=99 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=999 \addtolength{\labelwidth}{1em} \fi\bibitem[Yuan et
+  al.(2010)]{yuan2010t}
+J.~Yuan, Y.~Zheng, C.~Zhang, et al.
+\newblock T-drive: driving directions based on taxi trajectories[M].
+\newblock 2010, 99--108
+
+\ifnum \value{NAT@ctr}=9 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=99 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=999 \addtolength{\labelwidth}{1em} \fi\bibitem[Yuan and
+  Raubal(2012)]{yuan2012similarity}
+Y.~Yuan, M.~Raubal.
+\newblock Similarity measurement of mobile phone user trajectories--a modified
+  edit distance method[M].
+\newblock 2012, 15--16
+
+\ifnum \value{NAT@ctr}=9 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=99 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=999 \addtolength{\labelwidth}{1em} \fi\bibitem[Chen and
+  Ng(2004)]{chen2004marriage}
+L.~Chen, R.~Ng.
+\newblock On the marriage of lp-norms and edit distance[M].
+\newblock 2004, 792--803
+
+\ifnum \value{NAT@ctr}=9 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=99 \addtolength{\labelwidth}{1em} \fi\ifnum
+  \value{NAT@ctr}=999 \addtolength{\labelwidth}{1em} \fi\bibitem[Chen et
+  al.(2005)]{chen2005robust}
+L.~Chen, M.~T. {\"O}zsu, V.~Oria.
+\newblock Robust and fast similarity search for moving object trajectories[M].
+\newblock 2005, 491--502
+
+\end{thebibliography}

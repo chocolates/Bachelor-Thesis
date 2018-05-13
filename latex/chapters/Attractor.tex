@@ -1,0 +1,244 @@
+% !Mode:: "TeX:UTF-8"
+
+%%%%%% Algorithm Name: \emph{}
+%%%%%% Metric: $$
+
+% \definecolor{red}{rgb}{1,0,0}
+% \newcommand{\Reference}[1]{{\textcolor{red}{{} #1}}}
+
+\chapter{基于动态交互的社团挖掘算法}
+\label{chp:Attractor}
+聚类分析是数据挖掘领域一项非常重要的方法，在许多领域都有重要应用\citeup{fortunato2010community}。  正如前面所说，聚类分析的任务是将相似的对象分为一类，不相似的对象分到不同类。因此聚类分析通常需要首先定义对象与对象之间的相似度，在此基础上，应用聚类算法将相似的对象分为一类，不相似的对象分到不同类。聚类算法可以分为两类，第一类是应用于向量空间上的聚类算法，例如 \emph{DBSCAN}, \emph{OPTICS} 等等，这类算法的研究对象用 $n$ 维向量表示。另一类是应用于测度空间上的聚类算法，例如 \emph{k-means}, \emph{谱聚类}等等，当提供对象与对象之间的相似度后，这类算法即可将研究对象分为不同的类。当然，第二类算法也完全可以应用于向量空间，因为在向量空间上，我们很容易定义向量与向量之间的相似度。此外，基于测度空间的聚类与图聚类非常相似，在许多情况下，这两者可以相互转化 \footnote{给定一个阈值，我们可以将相似矩阵转化为一个网络；反之，通过定义相似度，即可将网络转化为相似矩阵}。\par
+对于图聚类 (社团挖掘) 这个问题，目前已经有许多经典的算法被提出来，例如： \emph{Ncut} 算法, \emph{Louvain} 算法, 等等。但是许多经典的社团挖掘 (图聚类) 算法存在一些问题，比如广泛应用的基于模体 ($modularity$) 社团挖掘算法假设网络符合零模型，而这个假设在实际的特别是大网络中并不合理；另外一个经典的 \emph{Ncut}\citeup{shi2000normalized} 算法通常得到的是规模相近社团\footnote{社团规模指的是这个社团中节点的个数}，而现实中社团的规模可能相差很大\citeup{fortunato2007resolution}。 除此之外，受复杂度的限制，许多经典的算法并不能有效地处理现实中出现的大规模网络。因此有效地挖掘实际存在的大规模网络中的社团结构依然是一个挑战。 \par
+在这篇文章中，我们提出了一个新的社团挖掘算法: \emph{Attractor} 。不同于现有的许多算法来优化某个人为指定的指标，例如 $modularity$, $cut$, $normalized\;cut$, 我们是将网络看作一个动态系统，通过节点与节点之间的交互，自动地发现社团结构。我们将会看到 \emph{Attractor} 可以有效地检测网络中存在的社团结构，并且不受社团规模的限制，因此可以较好地发现小规模的社团或是奇异点；此外，由于网络中各个节点只与周围节点交互，因此 \emph{Attractor} 的复杂度很低 ($O(|E|)$), 因此 \emph{Attractor} 可以用于大规模网络。 \par
+这一章剩余内容的结构安排如下： \ref{sec:basicidea} 将会介绍我们算法的基本思想以及 \emph{Attractor} 算法的主要贡献； \ref{sec:relatedwork} 简单地回顾了现有的相关社团挖掘 (图聚类) 算法； \ref{sec:algorithm} 将会具体地介绍 \emph{Attractor} 算法； \ref{sec:experiment} 是在人工数据集以及真实数据集上实验；最后 \ref{sec:conclusion} 是对这个工作的总结。 这章介绍的关于 \emph{Attractor} 的工作已经被 \emph{SIGKDD'2015}\footnote{21st ACM SIGKDD conference, 10 - 13 August 2015, Sydney, Australia} 会议接受。
+\section{基本思想与主要贡献}
+\label{sec:basicidea}
+\subsection{基本思想}
+从社会学角度来讲，\emph{社团}可以看作一群具有相对紧密联系的个体\citeup{james2014sustainable}。 因此我们想知道是否可以通过模拟人与人之间的交互 (联系) 来挖掘社团结构，即我们希望人与人交互过程中，同一个社团中的人的联系变得更加紧密，进而聚集到一起。具体来说，我们是将网络看作一个节点与节点交互的动态系统，但是与许多传统方法不同的是，我们并不考虑节点状态的变化，而是考察节点与节点之间距离的变化 （网络中边的距离的变化）。 在交互过程中 (见\ref{sec:algorithm}) ，开始时每条边有一个初始的距离；之后节点与节点开始交互，在此过程中，同一社团的节点之间的距离会变短，属于不同社团的节点之间的距离会增加；最终达到一个稳定的状态 (称这个稳定的状态为$Attractor$), 于是我们可以通过移除距离为$1$的边来自动地得到社团结构。 
+\pic[htbp]{基本思想}{width=\textwidth}{pics/ChapterAttractor/BasicIdea}
+
+\subsection{主要贡献}
+通过节点之间的交互过程, \emph{Attractor} 算法 可以有效地发现实际网络中存在的社团结构，特别的， \emph{Attractor} 有以下主要贡献:
+\begin{itemize}
+\item \textbf{直观的社团挖掘算法}: 不同于许多经典算法来优化某个人为定义的指标， \emph{Attractor} 从一个新的 (动态交互) 角度来探索社团结构。通过三种交互模式 (见\ref{sec:algorithm}), \emph{Attractor} 算法可以直观地并且有效地发现社团结构。 
+\item \textbf{小社团与奇异点检测}: 由于节点之间的距离变化由节点所处的网络的拓扑结构确定，因此 \emph{Attractor} 算法可以有效地检测任意规模的社团以及奇异点。
+\item \textbf{可扩展性}: 由于每个节点只与周围节点交互，因此 \emph{Attractor} 算法具有较低的时间复杂度 ($O(|E|)$), 这使得 \emph{Attractor} 算法可以处理大规模网络。并且由于节点交互时相互独立，因此 \emph{Attractor} 非常适合用并行算法实现 (甚至可以将整个网络分为几个部分用不同的计算机上分别进行处理)。
+\end{itemize}
+
+\section{相关工作回顾}
+\label{sec:relatedwork}
+正如前文所提到，近些年，许多经典的社团挖掘算法被相继提出，例如 \emph{Cut}, \emph{Ncut}, \emph{Modularity}, \emph{MCL}, \emph{Metis} 等等，由于篇幅限制，这里仅仅简单地回顾了与本文最相关的几个算法。关于社团挖掘算法的详细的介绍，请见综述文献\citeup{fortunato2010community} 和 \citeup{schaeffer2007graph} 。 \par
+\vspace{1mm}
+\emph{基于某个指标删边的社团挖掘方法.} 这类方法以 \emph{Ncut} 和 \emph{Modularity} 为代表，它们首先对每条边赋予一个权值 (例如 $Ncut$ 或者 $Modularity$), 进而删去一些边使得在这种指标下，整个网络达到最优。\emph{Cut}\citeup{wu1993optimal} 是其中一个比较出名的工作. 在\citeup{wu1993optimal}中，作者将通过移除一些边将一个网络分成 $k$ 个社团，其中移除的这些边尽可能地少。为了克服 \emph{Cut} 算法常常分出过多的少社团这个问题，Shi 等人把社团规模考虑了进来，提出了非常出名的 $Normalized \; cut$ 指标, \emph{Ncut} 算法通过优化 $Normalized \; cut$ 指标来找到网络中存在的社团\citeup{shi2000normalized}。在实际中，常常使用特征值分解\citeup{von2007tutorial} 的方法来加速计算，在许多情况下，使用谱分解进行聚类的方法也被称为谱方法。此外，还有一类基于 $Modularity$ 指标的社团挖掘方法也非常流行\citeup{newman2006modularity}\citeup{newman2004fast}, 为了减小时间开支，贪婪算法\citeup{blondel2008fast}以及模拟退火\citeup{rosvall2008maps}等方法被加入来减少算法运行时间。\par
+\vspace{1mm}
+\emph{可扩展的大规模网络处理方法} 为了处理现实中存在的大规模网络，许多算法被相继提出 \citeup{karypis1998fast} \citeup{karypis1998multilevelk} \citeup{van2000cluster}. 例如 \emph{Metis} 是一类可以用于大规模网络的层次社团挖掘算法，它每次将原来的社团分成两个部分，逐渐得到越来越精细的社团结构。另外一种在生物领域应用广泛的聚类算法 \emph{MCL} \citeup{van2000cluster}, 通过模拟网络中的随机流来分隔网络。
+
+\section{基于动态交互的社团挖掘算法}
+\label{sec:algorithm}
+\subsection{准备工作}
+在介绍我们的社团挖掘算法之前，首先来约定一些最基本的定义。 \par
+\textbf{定义一 \hspace{1mm} (无向图)} 用 $G=(V,E,W)$ 来表示无向图，其中 $V$ 是节点构成的集合， $E$是边构成的集合， $W$ 是边的权重构成的集合。 $ e = \{u,v\} \in E$ 表示节点 $u$ 和 $v$ 节点 之间存在一条连边， $w(u,v)$ 表示 $ \{u,v\} \in E$ 的权重。 对于 $\forall e = \{u,v\} \in E, w(u,v) = 1$ ，则 $G$ 是一个无向无权图。\par
+\vspace{1mm}
+\textbf{定义二 \hspace{1mm} (节点 的邻居)} 在无向图 $G=(V,E,W)$ 中， $u$ 节点的邻居 $\Gamma(u)$ 包含节点 $u$ 以及与节点 $u$ 有边相连的其它节点，
+\begin{equation*}
+\label{nb}
+\Gamma(u) =\{v \in V | \{u,v\} \in E\} \cup \{u\}
+\end{equation*}
+进一步，我们使用 \emph{Jaccard Distance}\citeup{hennig2006design} 来度量初始时节点与节点之间距离。\par
+\textbf{定义三 \hspace{1mm} (\textsc{JACCARD 距离})} 在无向图 $G=(V,E,W)$ 中， $u$ 节点和 $v$ 节点之间的 Jaccard 距离定义如下：
+\begin{equation*}
+\label{eq:jaccard}
+d(u,v) = 1- \frac{|\Gamma(u) \cap \Gamma(v) |}{|\Gamma(u) \cup \Gamma(v) |}
+\end{equation*}
+对于有权图，节点 $u$ 和节点 $v$ 之间的 Jaccard 距离定义如下：
+\begin{equation*}
+\label{eq:wjaccard}
+d(u,v) = 1- \frac{\sum_{x\in \Gamma(u) \cap \Gamma(v)}(w(u,x) +w(v,x))}{\sum_{\{x,y\}\in E; x,y \in \Gamma(u) \cup \Gamma(v)}  w(x,y)}
+\end{equation*}
+
+\subsection{交互模型}
+为了研究节点与节点之间的距离在交互过程中的变化，我们首先需要定义交互模型，包括交互范围以及交互模式。\par
+\vspace{1mm}
+\textbf{交互范围} 网络中的边非常直观地显示了各个节点的交互范围，因为我们可以很自然地假设：假如两个节点之间有边相连，那么这两个节点之间存在交互作用。\par
+\textbf{交互模式} 在确定交互范围后，另外一个关键的问题就是确定交互模式。由于社团结构由节点与节点之间最终的距离 (边的距离) 确定，因此我们考察边的距离的变化。假设 $ e = \{u,v\} \in E$ 是连接两个相邻节点 $u$ 和 $v$ 的一条边， $d(u,v)$ 是 $e = \{u,v\}$ 的初始时的距离，我们考察 $e$ 的距离是怎么变化的。显然，边 $e = \{u,v\}$ 的距离的变化是由它连接的两个节点 $u$ 和 $v$ 的变化引起的，而与 $u$ 和 $v$ 有边相邻的节点 ( $u$ 和 $v$的邻居) 都会对 $u$ 和 $v$ 产生作用。 根据与 $u$ 和 $v$ 有边相邻的节点拓扑位置的不同，我们可以将 $u$ 和 $v$ 的邻居分成三类，对应于 $e = \{u,v\}$ 发生变化的三种情景。\par
+\pic[htbp]{三种交互模式示意图}{width=\textwidth}{pics/ChapterAttractor/InteractionPattern}
+
+\vspace{2mm}
+\textsc{Pattern 1: 来自 $u$ 和 $v$ 的影响。} 在交互过程中，假如两个节点 $u$ 和 $v$ 之间有边相连，那么我们假设其中一个节点吸引着另外一个节点靠近自己，因此这两个节点之间的相互作用使得它们的距离倾向于变小 (相似度增加). 正如社会网络中，每个人通过分享自己的兴趣爱好给他的朋友，使得他的朋友与自己的紧密程度增加。假设用 $DI$ 来表示 $u$ 和 $v$ 对 $e = \{u,v\}$ 这条边距离 $d(u,v)$ 变化的直接影响， $DI$ 定义如下：
+% \vspace{-1mm}
+\begin{equation}
+\label{eq:pattern1}
+DI= -\bigg{(}\frac{f(1-d(u,v))}{deg(u)} + \frac{f(1-d(u,v))}{deg(v)}\bigg{)}
+\end{equation}
+其中 $deg(u)$ 是节点 $u$ 的度， $f(\cdot)$ 是耦合函数 (我们选用 $sin(\cdot)$ 函数作为耦合函数). $1-d(u,v)$ 等于节点 $u$ 和节点 $v$ 之间的紧密程度 (相似度)，若节点 $u$ 和节点 $v$ 的距离越近 (越紧密)，则它们之间的作用越强。 $\frac{1}{deg(u)}$ 考虑了节点的度的影响，一般来说，当一个节点的度越大时，那么这个节点可以从更多的途径获得知识，因此这个节点越不容易被某一个途径来的信息所影响；相反，假如一个节点的度很小，也就是说它只有非常有限的途径来获得信息，那么某一个途径来的信息则容易对它造成影响。\par
+\vspace{2mm}
+\textsc{Pattern 2: 来自 $u$ 和 $v$ 共同邻居的影响} 这里我们考虑另外一类对 $e = \{u,v\}$ 这条边的距离产生影响的节点：节点 $u$ 和节点 $v$ 的共同邻居。假设节点 $x$ 属于节点 $u$ 和节点 $v$ 的共同邻居构成的集合 $CN = (\Gamma(u) - u) \cap (\Gamma(v) - v)$， 由于节点 $x$ 与节点 $u$ 和节点 $v$ 都有边相连，因此节点 $x$ 将节点 $u$ 和节点 $v$ 都拉向自己，从而间接地减小节点 $u$ 和节点 $v$ 的距离。假设用 $CI$ 表示 节点 $u$ 和节点 $v$ 共同邻居对 $e = \{u,v\}$ 这条边距离的影响， $CI$ 定义如下：
+\begin{equation}
+\label{eq:pattern2}
+\begin{split}
+CI=-\sum_{x \in CN} \bigg{(} &\frac{1}{deg(u)}\cdot f\big{(}1-d(x,u)\big{)} \cdot (1-d(x,v)) + \\
+&\frac{1}{deg(v)}\cdot f\big{(}1-d(x,v)\big{)}\cdot (1-d(x,u))\bigg{)}
+\end{split}
+\end{equation}
+\vspace{1mm}
+与 \ref{eq:pattern1} 相比， 有额外两项 $(1-d(x,v))$ 和 $(1-d(x,u))$ 被加入到 \ref{eq:pattern2} 中来量化共同邻居 $x$ 对 $e = \{u,v\}$ 这条边距离的影响。例如，我们考察 $x$ 通过 $u$ 对 $e = \{u,v\}$ 的作用时，假如 $x$ 和 $v$ 越相似，那么 $x$ 和 $v$ 对 $e = \{u,v\}$ 的作用就越相似，而 $(1-d(x,v))$ 和 $(1-d(x,u))$ 分别表示了 $x$ 和 $v$ 的相似度，以及 $x$ 和 $u$ 的相似度。当 $x$ 和 $v$ 的相似度为\emph{1}时 ( $x$ 和 $v$ 可以看作完全一样的节点)，那么 $x$ 对 $d(u,v)$ 的影响可以转化为第一种 (\ref{eq:pattern1}) 交互模式。\par
+\textsc{Pattern 3: 来自 $u$ 和 $v$ 单独邻居的影响} 除了上述两类节点会对 $e = \{u,v\}$ 这条边的距离产生影响外，还有 $u$ 的单独邻居 $EN(u) =\Gamma(u) - \Gamma(u) \cap \Gamma(v)$ 以及 $v$ 的单独的邻居 $EN(v) =\Gamma(v) - \Gamma(u) \cap \Gamma(v)$ 会对 $e = \{u,v\}$ 的距离产生影响。与前两种交互模式类似，节点 $u$ 的单独的邻居会将 $u$ 拉向自己 (节点 $v$ 的单独的邻居会将 $v$ 拉向自己)，但是我们并不知道 $u$ 和 $v$ 到底会变近还是变远，因为假如节点 $u$ 的单独的邻居离节点 $v$ 较远的话， $u$ 靠近它单独的邻居的结果是 $u$ 和 $v$ 的距离增加；反之假如节点 $u$ 的单独的邻居离节点 $v$ 较近的话， $u$ 靠近它单独的邻居的结果是 $u$ 和 $v$ 的距离减小 ($v$ 单独的邻居的作用效果类似)。因此为了判断 $u$ 和 $v$ 各自的单独的邻居 $EN(u)$ 和 $EN(v)$ 对 $d(u,v)$ 的影响，我们需要给定一个相似度的阈值用来判断 $u$ 的单独的邻居与 $v$ 是否相似，以及 $v$ 的单独的邻居与 $u$ 是否相似。如果 $u$ 的单独的邻居与 $v$ 相似的话 (距离小)，$u$ 与它单独邻居之间的距离变小的结果是 $u$ 和 $v$ 之间的距离也变小；反之如果 $u$ 的单独的邻居与 $v$ 不相似的话 (距离大)，$u$ 与它单独邻居之间的距离变小的结果是 $u$ 和 $v$ 之间的距离变大。这里引入一个紧密度指标 $\lambda$ 来刻画 $EN(u)$ 和 $EN(v)$ 对 $d(u,v)$ 的影响 $EI$ 。
+
+\begin{equation}
+\label{eq:pattern3}
+\begin{split}
+EI = & -\sum_{x \in EN(u)} \bigg{(}\frac{1}{deg(u)}\cdot f\big{(}1-d(x,u)\big{)}\cdot \rho(x,u) \bigg{)} \\
+& -\sum_{y \in EN(v)} \bigg{(}\frac{1}{deg(v)}\cdot f\big{(}1-d(y,v)\big{)}\cdot \rho(y,v) \bigg{)}
+\end{split}
+\end{equation}
+
+其中
+\begin{equation}
+\label{eq:sign}
+\rho(x,u) = \left\{ \begin{array}{ll}
+\big{(}1-d(x,v)\big{)} & \textrm{$\big{(}1-d(x,v)\big{)}  \geq \lambda$ }\\
+\big{(}1-d(x,v)\big{)} - \lambda  & \textrm{otherwise}
+\end{array} \right.
+\end{equation}
+
+\vspace{3mm}
+最终，节点 $u$ 和节点 $v$ 在 t+1 时刻的距离 $d(u,v,t+1)$ 可以由t时刻 $u$ 和 $v$ 的距离 $d(u,v,t)$ 以及 $DI(t)$, $CI(t)$ and $EI(t)$ 确定：
+\begin{equation}
+\label{eq:dynamics}
+d(u,v,t+1) = d(u,v,t) + DI(t) + CI(t) + EI(t)
+\end{equation}
+
+\subsection{Attractor 算法}
+\subsubsection{Attractor 算法}
+基于上述交互模型，下面介绍我们的 \emph{Attractor} 算法。\par
+\begin{enumerate}
+\item 开始时 ($t=0$), 每条边被赋予一个权重。这里我们使用的是 Jaccard 距离 (见 \ref{eq:jaccard} 和 \ref{eq:wjaccard})。
+\item 之后随着时间的演化，每个节点与其周围的节点进行交互，每条边的距离的变化由交互模型中的三种不同交互方式确定：  (Eq. (\ref{eq:pattern1}), Eq. (\ref{eq:pattern2}) and Eq. (\ref{eq:pattern3})). 在交互过程中，同一个社团内的节点将会相互靠近，属于不同社团的节点之间的距离将会增加。
+\item 最终，当所有的边的距离不再变化时，我们将边长为1的边去掉，之后依然有边相连的节点即可看作一个社团。
+\end{enumerate}
+\pic[htbp]{动态交互过程示意图. (1) 初始时的网络；(2) 经历一个时间步后的网络；(3) 最终稳定时的网络}{width=\textwidth}{pics/ChapterAttractor/dynamic}
+\vspace{2mm}
+
+图 \ref{pics/ChapterAttractor/dynamic} 是一个模拟网络动态交互过程的示意图， \ref{pics/ChapterAttractor/dynamic}(a)-(c) 表示了网络交互时的三种状态 ( $t=0$ 到 $t=9$ )。 开始时 (\ref{pics/ChapterAttractor/dynamic}(a),$t=0$), 网络的每条边有一个初始长度；之后节点开始交互，边的距离发生变化，经过一个时间步后 ($t=1$), 边的距离如\ref{pics/ChapterAttractor/dynamic}(b) 表示；最后经过9个时间步的交互更新后，整个网络的距离不再发生变化，将边长为1的边去掉后即可得到最终的社团结构。 \emph{Attractor} 算法的伪代码见附录\ref{attractor:code}。
+
+\subsubsection{对耦合参数 $\lambda$ 的讨论}
+正如上述讨论，对于某条边来说，耦合度参数  确定了它连接的节点的单独的邻居对这条边的影响 (见 \ref{eq:sign}). 一般而言， $\lambda$ 越大，则可以得到更多的精细的社团； $\lambda$ 越小，那么得到的社团数量较少，社团规模较大。通过设置不同的 $\lambda$, \emph{Attractor} 算法可以从不同的尺度上检测网络的社团结构。更重要的是，相比较于许多需要指定划分的社团的个数的算法， $\lambda$ 的设置非常直观并且容易。图 \ref{pics/ChapterAttractor/level} 展示了当 $\lambda$ 取 $[0,1]$ 时的一个人工网络的结果。我们可以发现 $\lambda$ 在一个较大范围取值时 ($0.2-0.7$), \emph{Attractor} 算法都可以得到理想的结果，并且当 $\lambda$ 从小到大变化时，\emph{Attractor} 算法可以在不同层次上揭示网络的社团结构。
+
+\pic[htbp]{耦合参数 $\lambda$ 取值与聚类结果关系示意图}{width=\textwidth}{pics/ChapterAttractor/level}
+
+\subsection{时间复杂度分析}
+这里我们来分析 \emph{Attractor} 算法的时间复杂度。\par
+最开始时，我们需要计算每条边的长度，时间开销为 $O(|E|)$, 之后，对于每条边 $e = {u, v}$ 来说，每次交互时，需要计算 $u$ 和 $v$ 单独的邻居的距离，因此时间开销为 $O(k \cdot |E|)$, 假设交互 $T$ 个时间步，那么总共的时间开销为 $O(|E| + T \cdot (k \cdot |E|))$. 因此 \emph{Attractor} 算法的时间开销依然是 $O(|E|)$, 也就是与网络的边数成正比。
+
+\section{实验}
+\label{sec:experiment}
+为了说明 \emph{Attractor} 算法的优势，我们在人工数据集以及真实数据集上测试了 \emph{Attractor}, 并且与一系列经典的算法进行了比较。 \par
+\vspace{2mm}
+\textbf{\emph{比较算法}} 用于比较的经典算法有： \emph{Ncut}\citeup{shi2000normalized}, \emph{Modularity}\citeup{newman2004fast}, \emph{Metis}\citeup{karypis1998fast}, \emph{MCL}\citeup{van2000cluster}, \emph{Louvain}\citeup{blondel2008fast}, \emph{Infomap}\citeup{rosvall2008maps}. \par
+% \begin{itemize}
+% \item \textbf{Ncut} 
+% \item \textbf{Modularity}
+% \item \textbf{Metis}
+% \item \textbf{MCL}
+% \item \textbf{Louvain}
+% \item \textbf{Infomap}
+% \item \textbf{SCD}
+% \item \textbf{Walktrap}
+% \end{itemize}
+我们将 $\lambda = 0.5$ 设置为 \emph{Attractor} 的默认参数。实验是在 3.4 GHz CPU 和 32.0 GB RAM的电脑上完成的。 \par
+\vspace{2mm}
+\textbf{\emph{评价指标}} 为了比较 \emph{Attractor} 算法与这些经典算法的结果，我们选用了目前最常用的几个指标。
+\begin{itemize}
+\item \emph{对于社团结构已知的网络，}  由于网络已有标签，因此可以通过比较算法得到的结果与真实结果之间的差异来评价算法的好坏。这里，我们采用了三个最常用的指标： $Normalized \; Mutual \; Information \;(NMI)$ \citeup{strehl2003cluster}, $Adjusted \; Rand \; Index \;(ARI)$ \citeup{rand1971objective} 和 $Cluster \; Purity$\footnote{见 \url{http://nlp.stanford.edu/IR-book/html/htmledition/evaluation-of-clustering-1.html}}. 
+\item \emph{对于社团结构未知的网络，}  由于网络的真实社团结构未知，因此在这些网络上来比较各个算法的结果并不容易。在这里，我们选了2个被广泛使用的指标 $modularity$\citeup{newman2006modularity} 和 $normalized \; cut \;(ncut)$\citeup{shi2000normalized} 来评价各个算法。需要注意的是，一些算法 (例如基于 $modularity$ 和 基于$ncut$ 的算法) 正是来优化的这两个指标，因此这种比较方法并不公平。\par
+\end{itemize}
+
+\subsection{人工数据集上的对比试验}
+首先，我们构建了有真实社团标签的人工数据集来比较 \emph{Attractor} 与其它经典算法。 为了更好地模拟现实中的网络以及尽可能公平，我们选用 LFR 网络 \citeup{lancichinetti2008benchmark}. 在 LFR 网络中，节点与属于其它社团内的节点连边占它所有边的比例被定义为混合参数 ($mixing\;parameter$), 记作$\mu$. 当 $\mu$ 越小时，正确划分社团越容易，当 $\mu$ 越大时，正确划分社团越困难。
+
+\begin{pics}[htbp]{人工数据集实验结果}{LFR}
+\addsubpic{LFR1}{width=0.45\textwidth}{pics/ChapterAttractor/LFR1}
+\addsubpic{LFR2}{width=0.45\textwidth}{pics/ChapterAttractor/LFR2}
+\end{pics}
+
+\subsubsection{改变噪声边比例} 
+首先我们比较这些算法在网络具有不同噪声边 (社团与社团之间的边的比例) 时的表现 (结果见\ref{LFR}(a))。通过调节 LRF 网络中的 $\mu$ 参数 ($\mu$ 取 0.1 到 0.8)，我们即可得到具有不同噪声边比例的网络。所有的网络都有2000个节点，以及它们的平均度 $k=20$. \par
+从 \ref{LFR}(a) 中可以发现， \emph{Attractor}, \emph{Ncut}, \emph{MCL} 和 \emph{Infomap} 在 $\mu=40$ (每个节点有 40\% 的边与其它社团中的节点相连)时依然可以得到很好的结果，它们的结果随着噪声边的增加而变差，但是相比之下， \emph{Attractor} 对噪声更不敏感。 \emph{Modularity} 和 \emph{Louvain} (基于 $modularity$ 指标) 两种算法相比上述4种算法明显要差一些。至于 \emph{Metis}, 它的表现十分波动，并且当 $\mu$ 超过 $40\%$ 时， \emph{Metis} 得到的社团的质量在明显下降。
+
+\subsubsection{改变网络稀疏度}
+之后，我们比较网络的稀疏程度对这些算法的影响。这里，LRF 网络中的 $\mu$ 参数被固定为0.1 (网络都有2000个节点), 我们改变网络的平均度 $k$, 结果见\ref{LFR}(a). \par
+结果显示 \emph{Attractor}, \emph{MCL}, \emph{Ncut} 在这些网络 (平均度 $k$ 从25取到5) 都有不错的表现，即使在平均度 $k=5$ 的稀疏网络上，这三个算法依然可以有效地找到社团结构，并且 \emph{Attractor} 的结果要更好一点。 \emph{Louvain}, \emph{Metis} 和 \emph{Modularity} 对网络的稀疏程度要敏感一点。对于 \emph{Infomap} 算法，当网络的平均度为10时，它的结果是一个奇异点。
+
+\subsection{真实数据集上的对比试验}
+这部分，我们在真实的数据集上比较这些算法。这些数据集都是公开的，在 \url{https://networkdata.ics.uci.edu/index.php} 或者 \url{http://snap.stanford.edu/data/} 可以下载。这些网络的特征见表 \ref{NetDiscription}.
+
+\threelinetable[htbp]{NetDiscription}{0.95\textwidth}{XXXXXX}{真实网络统计特征 (AD: average degree; CC: cluster coefficient)}
+{Data Sets & $|V|$ & $|E|$ & $\#$Class & AD & CC\\
+}{
+Zarachy & 34 & 78 & 2 & 4.588 & 0.571\\
+Football & 115 & 613 & 11 & 10.66 & 0.403\\
+Polbooks & 105 & 441 & 3 & 8.400 & 0.488\\
+Amazon & 334863 & 925872 & 151037 & 5.530 & 0.397\\
+Collaboration & 9875 & 25973 & - & 5.260 & 0.312\\
+Friendship & 58228 & 214078 & - & 7.353 & 0.172\\
+Road & 1088092 & 1541898 & - & 2.834 & 0.047\\
+}{}
+
+\subsubsection{社团结构已知的网络}
+首先，我们在四个已知社团结构的网络上比较这些算法，选用的评价指标是：$NMI$, $ARI$ 和 $purity$. 结果见表 \ref{pics/ChapterAttractor/RealNetworkTable1}. \par
+\pictable[htbp]{有标签网络上各算法比较 }{width=\textwidth}{pics/ChapterAttractor/RealNetworkTable1}
+\vspace{2mm}
+\textbf{Zachary's karate club network:} \citeup{zachary1977information} Zachary 空手道俱乐部网络是一个非常有名的小网络，它反映了一个空手道俱乐部成员之间的朋友关系。并且我们已经知道，这个空手道网络中的成员可以分为2个社团\footnote{这两个社团分别有各自的中心成员：俱乐部经理和教练。经理和教练存在着的分歧正好体现在网络结构中}。图 \ref{pics/ChapterAttractor/karate} 显示 \emph{Attractor} 算法有效的监测到了这个网络中存在的两个社团，并且在 $NMI$, $ARI$ 和 $Purity$ 这三个指标下来看， \emph{Attractor} 的结果是最好的。事实上， \emph{Attractor} 将其中一个节点当作了噪声点，如果我们仔细观察这个点的话，可以发现这个点处于两个社团之间，在实际中，仅仅根据这个网络的拓扑属性很难正确区别这个节点。对于其它算法来说， \emph{MCL} 和 \emph{Ncut} 也达到了很好的结果，但是它们都分错了一个点。从 $NMI$, $ARI$ 和 $Purity$ 这三个指标来衡量的话，剩下的算法得到的结果并不理想。\par
+\pic[htbp]{\emph{Attractor} 算法在空手道网络上的结果}{width=0.65\textwidth}{pics/ChapterAttractor/karate}
+
+\vspace{2mm}
+\textbf{橄榄球比赛网络:} \citeup{girvan2002community} 这个网络包含115个节点，613条边，其中节点代表球队，如果两个节点之间有边相连，那么这两个球队在2000年秋季赛季中有过比赛。根据这些球队所属协会不同，它们可以被分成12个社团。图 \ref{pics/ChapterAttractor/football} 是 \emph{Attractor} 得到的结果。我们可以发现 \emph{Attractor} 很好地找到了这些社团 ($NMI = 0.923$, $ARI = 0.897$, $Purity = 93.0\%$). \emph{MCL} 和 \emph{Ncut} 得到了和 \emph{Attractor} 相似的结果，但是 \emph{Metis}, \emph{Modularity}, \emph{Louvain} 和 \emph{Infomap} 得到的结果并不好。 \par
+
+\pic[htbp]{\emph{Attractor} 算法在橄榄球比赛网络上的结果}{width=0.6\textwidth}{pics/ChapterAttractor/football}
+
+\vspace{2mm}
+\textbf{政治书网络:} \footnote{\url{http://www.orgnet.com/}} 这个网络中每个节点代表一本政治书，它们的标签 ``l'', ``n'' 和 ``c'' 分别表示它们的观点 ``激进'', ``中立'' 和 ``保守''，如果两本书在 Amazon.com 被同一个读者购买过，那么这两本书之间有一条连边。这些算法相比之下， \emph{Attractor} 得到的结果较好，特别地， 激进类和保守类这两个社团结构被较好地检测到 (见图 \ref{pics/ChapterAttractor/polbook}).\par
+
+\pic[htbp]{\emph{Attractor} 算法在政治书网络上的结果}{width=0.6\textwidth}{pics/ChapterAttractor/polbook}
+
+\vspace{2mm}
+\textbf{亚马逊商品网络:} 这个网络包含334,863个节点， 925,872条边，其中每个节点根据它的类别被分到某一个社团中。文献 \citeup{yang2015defining} 给出了前5,000个可信度最高的社团。 根据这5,000个社团的结果，我们比较了 \emph{Attractor} 与 其它算法 (\emph{Ncut} 和 \emph{Modularity} 这两个算法由于复杂度过高，不能处理这个网络) 在这个网络上的结果 ($NMI = 0.931$, $ARI = 0.580$, $Purity = 0.998$)。 \emph{MCL} 也得到了一个较好的结果 ($NMI=0.902$). 但是 \emph{Metis}, \emph{Louvain} 和 \emph{Infomap} 并不能得到较好的结果。另外，这5个算法得到的社团在 \emph{modularity} 和 \emph{ncut} 这两个指标下的结果见表\ref{pics/ChapterAttractor/RealNetworkTable2}.
+
+\subsubsection{社团结构未知的网络}
+现实中的网络大多规模较大，而社团结构未知。在这些无标签的大规模网络上，由于没有真实标签，因此无法再次使用 $NMI$, $ARI$ 和 $purity$ 这三个指标对算法进行比较。这里我们选用了另外的两个指标来衡量各个算法得到的结果。 另外，由于 \emph{Ncut} 和 \emph{Modularity} 的复杂度很高，使得它们无法处理这些大规模网络，因此只有 \emph{Metis}, \emph{MCL}, \emph{Louvain} 和 \emph{Infomap} 这四种算法与 \emph{Attractor} 进行了比较。结果见表\ref{pics/ChapterAttractor/RealNetworkTable2}.
+\pictable[htbp]{Results on Unlabeled Real Networks}{width=\textwidth}{pics/ChapterAttractor/RealNetworkTable2}
+
+\vspace{2mm}
+\textbf{科学家合作网络:} \citeup{leskovec2007graph} Hepth 科学家合作网络由9,875个在高能物理领域发过文章的作者组成，每个节点代表一个作者，假如两个作者是同一篇文章的共同作者，那么这两个节点之间有一条边相连。在这个数据集上，假如我们用 \emph{modularity} 和 \emph{ncut} 这两个指标来衡量得到的结果的好坏， \emph{Attractor} 的结果要好于 \emph{Metis} 和 \emph{MCL}, 但 \emph{Louvain} 和 \emph{Infomap} 的结果要比 \emph{Attractor} 更好 (\ref{pics/ChapterAttractor/RealNetworkTable2})。但是需要注意的是， 与 \emph{Attractor} 算法相比， \emph{Louvain} 和 \emph{infomap} 得到的社团非常少，从 $modularity$ 和 $ncut$ 的计算过程可以发现，这样的结果很自然地产生较好的 $modularity$ 和 $ncut$. \par
+\vspace{2mm}
+
+\textbf{基于位置信息的朋友关系网络:} Brightkite 朋友关系网络包含 8,228 个节点和 214,078 条边。 在这个数据集上， \emph{Attractor} 找到了 8,045 个社团并比 \emph{MCL} 和 \emph{Metis} 具有明显优势。不过，和预想的一样， \emph{Louvain} 和 \emph{Infomap} 得到的社团数量很少，这两个算法得到的结果的 $modularity$ 和 $ncut$. 相比 \emph{Attractor} 更好一些。 \par
+\vspace{2mm}
+
+\textbf{道路网络:} Pennsylvania 道路网络中节点代表交叉路口或者路的起点或终点，边对应着连接这些地点的道路。这里，由于这个网络非常稀疏，我们将 \emph{Attractor} 的耦合度参数设置为 0.6， \emph{MCL} 的参数设置为1.4， \emph{Attractor} 找到了59,919个社团 ($modularity = 0.856$ and $ncut = 25055$), \emph{MCL} 得到了类似的结果并且比 \emph{Metis} 要好。 \emph{Louvain} 和 \emph{Infomap} 找到了很少量的社团。
+
+\subsection{社团规模分布和噪声点检测}
+\subsubsection{社团规模比较}
+之前已经多次提到，一些经典的算法倾向于将网络分成规模接近的社团\citeup{fortunato2007resolution}，因此无法有效地检测现实中常常存在的小规模社团，以及当社团规模并不接近时，这些算法的效果并不好。这里，我们选用 Amazon 网络为例，测试了这些算法得到的社团规模分布，并且与 Amazon 网络真实的社团分布进行了比较，结果见图\ref{pics/ChapterAttractor/amazondistribution}.\par
+从图\ref{pics/ChapterAttractor/amazondistribution}中可以发现， \emph{Attractor} 可以发现不同规模大小的社团，特别是许多小规模的社团，而且分布和真实的社团规模分布最为接近。 进一步，为了证明 \emph{Attractor} 找到的这些社团是有意义的，我们用 \citeup{fortunato2007resolution} 提供的 最可信的前5,000个社团作为真实标签，检测了 \emph{Attractor} 算法得到的规模小于30的社团 (\emph{Attractor} 找到了1,458个规模小于30的社团)，得到的结果是：$NMI = 0.941$, $ARI = 0.637$ 以及 $Purity = 0.989$, 这说明了 \emph{Attractor} 找到的小社团是有意义的。
+
+\pic[htbp]{Amazon 网络上各算法得到的社团大小分布}{width=0.6\textwidth}{pics/ChapterAttractor/amazondistribution}
+
+\subsubsection{噪声点检测}
+另外，为了验证 \emph{Attractor} 是否可以有效地发现噪声点 (奇异点/孤立点), 对于每个节点，我们定义这个点的度与它的所有邻居的连边的条数之比，为这个点的 ``局部噪声水平''，一个节点的 ``局部噪声水平'' 放映了它的噪声程度。我们通过计算 \emph{Attractor} 算法找到的噪声点的 ``局部噪声水平''来衡量 \emph{Attractor} 处理噪声点的能力。作为比较，我们计算了网络所有点的平均的 ``局部噪声水平'' 以及 \emph{MCL}\footnote{选用 \emph{MCL} 算法作为比较的原因是，其它算法受限于 ``Resolution limit''，无法找到噪声点} 算法的结果，见\ref{pics/ChapterAttractor/anomaly}. 从结果中可以看到， \emph{Attractor} 找到的噪声点的 ``局部噪声水平'' 明显低于同网络的平均的 ``局部噪声水平''， 也明显低于 \emph{MCL} 算法找到的噪声点的 ``局部噪声水平''。
+
+\begin{pics}[htbp]{噪声检测实验结果}{anomaly}
+\addsubpic{Anomaly Attractor}{width=0.4\textwidth}{pics/ChapterAttractor/anomalyattractor}
+\addsubpic{Anomaly MCL}{width=0.4\textwidth}{pics/ChapterAttractor/anomalymcl}
+\end{pics}
+
+\subsection{时间复杂度测试}
+为了对比这些算法的运行时间，我们生成了边数从10,000到100,000,000的具有平均度为20的 LFR 网络，结果见图 \ref{pics/ChapterAttractor/runtime}。 我们可以发现 \emph{Attractor} 明显地快于 \emph{Modularity}, \emph{Ncut} 和 \emph{MCL} ，并且 \emph{Attractor} 的运行时间与边数成正比 ($O(|E|)$)。 同时， \emph{Attractor} 要慢于 \emph{Metis}, \emph{Louvain} 和 \emph{Infomap}, 尽管许多数据集显示 \emph{Attractor} 的效果比这三种算法要好。
+
+\pic[htbp]{时间复杂度比较}{width=0.6\textwidth}{pics/ChapterAttractor/runtime}
+
+\section{总结}
+\label{sec:conclusion}
+在这篇文章中，我们从动态交互角度出发，提出了一个新的社团挖掘算法 \emph{Attractor}, 并且将 \emph{Attractor} 和经典的社团挖掘算法进行了比较，通过一系列的实验证明了 \emph{Attractor} 的优势。结果显示 Attractor 并不受限于 ``resolution limit''，而是可以高质量地检测出任意大小的社团，并且 Attractor 时间复杂度与网络中边的条数成正比。 这份工作只是一个开始，我们希望之后进一步改进 Attractor 并以其为基础，研究网络科学中的其它问题。
+

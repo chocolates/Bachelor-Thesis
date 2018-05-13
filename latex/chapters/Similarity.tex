@@ -1,0 +1,181 @@
+% !Mode:: "TeX:UTF-8"
+
+
+\definecolor{red}{rgb}{1,0,0}
+\newcommand{\Reference}[1]{{\textcolor{red}{{} #1}}}
+\chapter{轨迹数据相似度度量} 
+\label{chp:Similarity}
+衡量对象与对象之间的相似度指标十分重要\citeup{zheng2011computing}，因为它许多问题中都有广泛的应用\citeup{wang2013effectiveness}。例如前面已经提到的聚类算法，所有的聚类算法都有一个使用的前提，那就是必须先存在一个衡量对象与对象之间相似度 (距离) 的指标；再比如当我们需要对某个事物做出预测时 (例如推荐系统、链路预测、空间位置预测等等) ，一种常见的方法是通过合适的相似度指标来找到与这个事物最为相似的几个其它事物，然后根据与它相似的其它事物的特征 (行为) 来预测这个事物将要出现的特征\citeup{zheng2011computing}。 \par
+对于可以用 \emph{n} 维空间中的向量表示的对象，我们可以用欧式距离衡量它们之间的相似度。但是在日常生活中，我们常常面对的是更加复杂的数据类型，例如复杂网络、时间序列等等，这些复杂的数据集上的相似度度量依然是公开的问题。特别的，GPS设备的广泛应用，使得越来越多的轨迹数据被保存下来，挖掘这些轨迹数据中存在的人们活动的规律有着非常重要的应用，而一个有效的度量轨迹数据相似度的指标是解决许多问题的基础 (例如聚类、预测) 。\par
+在这篇文章中，我们提出了一个新的度量轨迹数据 \footnote{事实上，这个相似度指标不仅适用于轨迹数据 (例如由GPS采集到的轨迹)，也适用于其它行为数据，见下文介绍} 相似度的指标：基于空间分布和空间分布的轨迹相似度指标。我们将会发现，这个相似度指标不仅仅适用轨迹数据，它同样也适用与其它行为数据 \footnote{这里所说的行为数据指的是可以用类似 $\{<t_1,behavior_1>,<t_2,behavior_2>,\ldots,<t_n,behavior_n>\}$ 这种集合表示的数据。例如轨迹数据可以表示为 $\{<t_1,location_1>,<t_2,location_2>,\ldots,<t_n,location_n>\}$ } ，例如点击网页的行为数据。\par
+这一章剩余内容的结构安排如下： \ref{simlarity:basicidea} 将会介绍将要提出的相似度指标的基本思想以及主要贡献; \ref{simlarity:relatedwork} 简单地回顾了几个经典的衡量轨迹数据相似度的方法； \ref{simlarity:similarity} 将会具体地介绍我们提出的衡量轨迹相似度的方法； \ref{simlarity:experiment} 是在一个出租车GPS数据集的相似度的实验；最后 \ref{simlarity:conclusion} 节是对我们工作的总结。 
+
+\section{基本思想与主要贡献}
+\label{simlarity:basicidea}
+\subsection{基本思想}
+为了衡量轨迹之间的相似度 (距离) ，非常重要的一点是找到它们之间的差异，也就是哪些属性使得这些轨迹成为了不同的轨迹。从本质上来说，轨迹数据由时间信息以及空间信息构成，因此我们从空间特征和时间特征这两个角度来考虑轨迹之间的相似度。具体来说，对于每一条轨迹数据，我们先将其映射到一个行为网络 (\emph{MobNetwork}) \citeup{song2010limits}\citeup{yan2013diversity}，并且根据轨迹数据的空间信息和时间信息，为行为网络赋予一些属性 (例如节点的权值和节点的访问时间分布)，使得映射后的行为网络的属性可以反映对应的轨迹的空间特征以及时间特征，然后通过比较行为网络 (\emph{MobNetwork}) 的差异 (相似度), 进而确定这些行为网络对应的轨迹之间的相似度。\par
+\vspace{2mm}
+\pic[htbp]{行为网络示意图}{width=0.8\textwidth}{pics/ChapterSimilarity/BasicIdea}
+
+图 \ref{pics/ChapterSimilarity/BasicIdea} 展示将轨迹 (\ref{pics/ChapterSimilarity/BasicIdea}(1)) 转化为行为网络 (\ref{pics/ChapterSimilarity/BasicIdea}(2)) 的过程。其中图 \ref{pics/ChapterSimilarity/BasicIdea} (1) 是一个学生从早上6:00到中午12:30的轨迹，时间间隔为5分钟， 图 \ref{pics/ChapterSimilarity/BasicIdea} (2) 是这条轨迹对应的行为网络，网络中的每个节点对应一个在轨迹中出现的地点，网络中的边对应地点之间的转移。图 \ref{pics/ChapterSimilarity/BasicIdea} (3) 是每个节点存储的信息的示意图\footnote{以 ``School'' 节点为例}， 每个节点存储关于这个地点的两个信息\footnote{目前的相似度度量方法是比较粗略的版本，接下来，我们将要加入边的信息 (地点与地点之间的转移), 还进一步刻画轨迹的局部特征}：这个地点在轨迹中出现的次数 (作为节点的权重) 以及这个地点被访问的时间的分布，这两者分别反映了轨迹的空间信息和时间信息。于是，比较轨迹的相似度的问题就转化为了如何比较网络的相似度。很自然地，对于两个行为网络，我们可以计算节点权重的分布之间的差异以及对应节点访问时间的分布的差异，前者反映了两个轨迹的空间的相似度，后者反映了两个轨迹的时间的相似度，将这两者结合起来即可得到两个轨迹的相似度。\par
+
+\subsection{主要贡献}
+通过轨迹的时间信息以及空间信息构建的行为网络可以有效地反映轨迹之间的相似度。特别地，这种相似度指标有以下几个优势：
+\begin{itemize}
+\item \textbf{有效地提取轨迹的空间和时间信息}: 将轨迹数据转化为行为网络，并根据轨迹数据的时间和空间信息赋予行为网络对应的属性，这个过程可以有效地提取轨迹的空间和时间信息，并且为之后利用这些空间和时间信息来计算轨迹的相似度做好了准备工作，在此基础上计算轨迹的相似度变得非常容易。
+\item \textbf{可扩展性}: 首先，基于行为网络的相似度度量具有较低的时间开销，因为将轨迹数据转化为行为网络后，我们只需要通过比较行为网络的属性来确定相似度即可，而不再需要单独考虑轨迹数据中的每个点。其次，当行为数据具有更多特征时 (我们希望考虑轨迹数据更多的特征时) ，通过 \ref{simlarity:similarity} 节介绍的方法，我们非常容易将这些新特征加入进来，这点在之后的介绍中可以体现出来。
+\item \textbf{对噪声点不敏感}: 把轨迹数据转化为行为网络后，不仅仅可以简化运算，这种方法还可以使噪声点对相似度计算的影响减小。这是由于将轨迹转化为行为网络之后再计算相似度时，用到了轨迹的时间和空间的整体的特征，而不是直接考虑轨迹中的每个点，而少量的噪声点并不会对轨迹整体的时间和空间特征造成影响，因此可以减少数据中存在的噪声的影响。
+\end{itemize}
+
+\section{相关工作回顾}
+\label{simlarity:relatedwork}
+轨迹数据的聚类、分类、预测在许多领域都具有重要的研究价值，而相似度度量是这些工作的基础。由于轨迹数据可以看作时间序列，因此一些应用于时间序列相似度度量的方法也可以被用于轨迹数据，下面，我们就来回顾一下这些方法。\par
+\subsection{基于动态时间规整的相似度度量}
+动态时间规整\footnote{Dynamic Time Warping (DTW)}\citeup{keogh2001derivative} \citeup{senin2008dynamic}, 被经常用来比较时间序列的相似性 (距离)。 它的基本想法是为两个时间序列找到``最好的''匹配，为了实现这一点，时间序列在时间轴上被拉长或压缩 ("Warping")\citeup{salvador2007toward}, 之后两个时间序列上的点再``最合适地''相互匹配。\par
+假设两个时间序列 $X$ 和 $Y$ 的长度分别为 $m$ 和 $n$, 则 $X$ 和 $Y$ 可以表示为：
+\begin{equation}
+\label{DTW1}
+X = (x_1, x_2, \ldots, x_m)
+\end{equation}
+\begin{equation}
+\label{DTW2}
+Y = (y_1, y_2, \ldots, y_n)
+\end{equation}
+
+时间序列规整的目标是找到 $X$ 和 $Y$ 的最佳的匹配路径 $W$, 记 $W$ 为
+\begin{equation}
+\label{DTWpath}
+W = (w_1, w_2, \ldots, w_K)
+\end{equation}
+
+$K$ 为匹配路径 $W$ 的长度，$K$ 满足条件 $max(m,n) < K < m+n-1$; 匹配路径 $W$ 中的每个元素 $W_k (0\leq k \leq K)$ 表示 $X$ 中的某个点 $x_i$ 与 $Y$ 中的某个点 $y_j$ 匹配到了一起，记作 $w_k=(i,j)$ ， $W$ 应满足以下约束：
+\begin{enumerate}
+\vspace{1mm}
+\item 边界条件：$w1 = (1, 1)$ and $w_K = (m, n)$, 即 $X$ 的第一个点 和 $Y$ 的第一个点要匹配到一起， $X$ 的最后一个点 和 $Y$ 的最后一个点要匹配到一起。
+\item 匹配顺序：对于 $W$ 中的任意两个点 $w_k = (i, j)$ 和 $w_{k+1} = (i', j')$， 要求 $i' \ge i$ 并且 $y' \ge y$. 实际上，这个约束限制了 $X$ 和 $Y$ 只能线性地 (在时间轴上拉长或缩短) 匹配。
+\item 连续性：对于$W$ 中的任意两个点 $w_k = (i, j)$ 和 $w_{k+1} = (i', j')$, 要求 $i' - i \le 1$ 并且 $y' - y \le 1$， 这个约束要求 $X$ 和 $Y$ 中的每个点都有匹配。
+\vspace{1mm}
+\end{enumerate}
+
+满足以上约束的匹配有许多可能，动态时间规整是要找出其中``最好''的匹配，也就是使 $X$ 和 $Y$ 距离最小的匹配：
+
+\begin{equation}
+dtw(X, Y) = min( \sum_{k=1}^{K} d(w_k) )
+\end{equation}
+
+$d(\cdot)$ 是距离函数，例如 $d(w_k) = d(x_i,y_j) = |x_i-y_j|$. \par
+
+在求解两个时间序列的 DTW 距离时，动态规划技术尝尝被用来加快寻找最佳匹配的速度\citeup{itakura1975minimum}。\par
+\vspace{2mm}
+\pic[htbp]{基于DTW的轨迹相似度示意图\citeup{chen2013dynamic}}{width=0.9\textwidth}{pics/ChapterSimilarity/DTW}
+
+\subsection{基于最长共同子串的相似度度量}
+在实际情况中，受设备精度的限制、信号传输过程中存在的噪声以及许多其它可能的情况的影响，实际到的轨迹数据采样点可能与正确值存在着误差，而基于最长共同子串\footnote{Longest common subsequence (LCSS)} 的相似度度量是一种对噪声比较不敏感的方法\citeup{wang2013effectiveness}。它的基本思想是用两个序列都出现的最长的共同子序列的长度来衡量这两个序列的相似度\citeup{buzan2004extraction}。对于包含经纬度的轨迹，需要指定一个阈值 $\epsilon$, 当两个轨迹中的采样点的距离小于 $\epsilon$ 时，则认为这两个点可以匹配在一起，即这个点属于这两个序列的共同子序列。通过比较两个序列的最长子序列，进而确定这两个序列的相似度。
+
+\subsection{基于最小编辑距离的相似度度量}
+最小编辑距离\footnote{Edit distance} 是一种衡量两个字符串相似度的方法，基于最小编辑距离的相似度度量方法被应用在自然语言处理\citeup{jurafsky2000speech}, DNA 分析\citeup{needleman1970general}等领域。它的基本思想是用将一个序列转化为另一个序列所需要的最小编辑代价来衡量这两个序列的不相似程度，即把将一个序列转化为另一个序列需要的最小的编辑操作的代价看作这两个序列的距离。许多情况下，允许的编辑操作包含：将一个字符替换成另一个字符，插入一个新字符以及删除一个字符，并且这三种操作可以有不同的代价\footnote{Levenshtein 开始提出 edit distance 这三种操作的代价是一样的}。\par
+维基百科中的一个例子展示了怎样求两个序列 (以``kitten'' 和 ``sitting''两个序列为例，Levenshtein 距离为3) 的最小编辑距离\footnote{\url{http://en.wikipedia.org/wiki/Edit_distance}}:
+\begin{enumerate}
+\vspace{1mm}
+\item \textbf{k}itten $\to$ \textbf{s}itten (将 ``k'' 替换为 ``s'')
+\item sitt\textbf{e}n $\to$ sitt\textbf{i}n (将 ``e'' 替换为 ``i'')
+\item sittin $\to$ sittin\textbf{g} (在结尾加 ``g'')
+\vspace{1mm}
+
+\end{enumerate}
+在实际应用中，最小编辑距离也通常采用动态规划的方法来得到。
+
+
+\section{基于行为网络的轨迹相似度度量}
+在介绍相似度度量之前，我们先约定几个之后会用到的定义。
+\label{simlarity:similarity}
+\subsection{准备工作}
+\textbf{定义一 \hspace{1mm} (轨迹)} 下文中用 $\mathcal{T}$ 表示轨迹构成的集合，用 $T$ 表示某一条轨迹， $\mathcal{T}$ 中的第 $i$ 条轨迹用 $T^{(i)}$ 表示。 其中, $T^{(i)}$ 由一系列包含时间位置信息的点构成，即 $T^{(i)} = \{<t^{(i)}_1,loc^{(i)}_1>,<t^{(i)}_2,loc^{(i)}_2>,\ldots,<t^{(i)}_N,loc^{(i)}_N> \}$ (假设这条轨迹有 $N$ 个采样点), 当位置信息包含两个维度时 (例如经度和纬度) , $T^{(i)}$ 可写为 $T^{(i)} = \{<t^{(i)}_1,x^{(i)}_1,y^{(i)}_1>,<t^{(i)}_2,x^{(i)}_2,y^{(i)}_2>,\ldots,<t^{(i)}_n,x^{(i)}_n,y^{(i)}_n> \}$. \par
+\vspace{2mm}
+\textbf{定义二 \hspace{1mm} (含时行为数据)} 对于含时间的行为 (动作) 构成的行为数据，可以类似地表示。用 $\mathcal{B}$ 表示行为数据构成的集合，用 $B$ 表示某一个行为数据， $\mathcal{B}$ 集合中的第 $i$ 个行为用 $B^{(i)}$ 表示。 其中, $B^{(i)}$ 由一系列包含时间行为信息的点构成，即 $B^{(i)} = \{<t^{(i)}_1,behavior^{(i)}_1>,<t^{(i)}_2,behavior^{(i)}_2>,\ldots,<t^{(i)}_N,behavior^{(i)}_N> \}$. 根据不同需要，可以将 $behavior$ 换成某种具体的行为，比如当把 $behavior$ 换成访问的地理位置时，这个行为数据就等同于了上面介绍的轨迹数据。 \par
+\vspace{2mm}
+\textbf{定义三 \hspace{1mm} (行为网络)} 对每一个行为数据 $B$, 我们可以将它映射到一个行为网络 $N=(V,E,PV,PE)$, 其中 $V$ 是节点构成的集合，对于 $V$ 中的任意一个节点 $\forall v \in V$, $v$ 代表一种在 $B$ 中出现过的行为； $E$ 是边构成的集合，对于 $\forall e = {u,v} \in E$, $e$ 表示发生过从行为 $u$ 转移到行为 $v$, $PV$ 是网络中节点属性的集合， $PE$ 是网络中边属性的集合。\par
+\vspace{2mm}
+\textbf{定义四 \hspace{1mm} (Bhattacharyya Distance \footnote{引用自维基百科: \url{http://en.wikipedia.org/wiki/Bhattacharyya_distance}} )} 巴氏距离是一种被广泛使用的度量离散变量或者连续变量概率分布之间的距离的指标  ，它要求随机变量有相同的值域。假设随机变量\footnote{在此文中，如果没有特别说明，随机变量指离散随机变量} $p$ 和 $q$ 的值域空间为 $X$, $p$ 和 $q$ 的巴氏距离定义如下：
+\begin{equation}
+\label{BhattacharyyaDis}
+\begin{split}
+&D_B(p,q) = - \ln(BC(p,q))\\ 
+where: &BC(p,q) = \sum_{x \in X} \sqrt{p(x)q(x)}
+\end{split}
+\end{equation}
+\subsection{基于行为网络的轨迹相似度度量}
+\subsubsection{将轨迹映射到行为网络}
+\label{subsubsec:mapping}
+将轨迹数据首先映射到行为网络可以带来三个好处，首先是使得轨迹数据相似度度量变得比较容易，因为通过行为网络这种形式，我们可以有效地通过行为网络的属性来把握轨迹的时间和空间信息，进而比较轨迹的相似度；其次是降低了复杂度，因为我们不用直接研究轨迹中的每个数据点；并且使得相似度计算对噪声不敏感，因为计算相似度时，我们用到的是轨迹的时间和空间的统计信息，而少量的噪声点并不会对轨迹整体的时间特征和空间特征造成较大的影响。\par
+接下来，我们需要解决一个关键问题：怎样比较好地将轨迹映射到行为网络上，也就是使得行为网络尽可能充分地保留并反映轨迹的时间信息和空间信息，并且方便之后计算相似度。对于这个问题，我们可以这样做：将轨迹中出现的地点的集合作为网络中的点集，将轨迹中出现的一个地点到另一个地点的转移作为网络中的边集，然后通过赋予的网络的属性来体现轨迹的空间和时间特征。对于 GPS 数据，由于其纪录的是出租车的经纬度位置，而非地点。因此，我们需要首先将出租车出现的区域离散化\footnote{我们通过用经纬度将区域分为长方形小格将区域离散化}，将 GPS 经纬度位置对应到相应的区域。\par
+这里我们用节点的权值以及各个节点的访问时间的分别来反映轨迹的空间和时间特征\footnote{目前的相似度度量方法是最初的比较基础的版本，仅仅考虑了这两个特征。在下一个版本中，我们将会多增加表示轨迹在 k 个地点转移的多元组，来刻画轨迹局部的转移特征}。具体来说，对于某个节点 $v$，我们赋予 $v$ 两个属性：权值 (用 $w(v)$ 表示) 和访问该节点的时间分布，其中节点的权值等于这个节点对应的地点在这条轨迹中出现次数。 \par
+% 假如 \Reference{介绍节点权重和节点访问时间分布。。。。。。} 于是最终构建的行为网络包含 (节点，边，节点访问次数，节点访问时间分布) 这四个特征。
+\subsubsection{行为网络相似度比较}
+\label{subsubsec:computesimilarity}
+将轨迹映射到行为网络后，我们就可以通过比较行为网络属性的差异进而来确定对应的轨迹的相似度。具体来说，我们将每个节点对应的地点在对应的轨迹中出现的次数作为这个节点的权值，通过比较两个网络的节点的权值的分布 \footnote{将出现的地点作为离散随机变量，地点出现的次数 (归一化后) 可以看作离散随机变量的概率分布} 来衡量这两个轨迹的空间相似度。除此之外，我们对每个节点建立它的访问时间的分布\footnote{对于每个节点来说，访问它的时间可以看作随机变量，每个时间段出现的次数 (归一化后) 可以看作访问时间的概率分布}, 通过比较两个网络中对应节点的访问时间的分布，我们可以得到两个网络的时间相似度。分别如下：\par
+\vspace{1mm}
+\textbf{1. 轨迹空间相似度} 对应第 $i$ 条轨迹 $T^{(i)}$, 构建它的行为网络 $N^{(i)}$, 对于 $N^{(i)}$ 中的第 $j$ 个节点 $v^{(i)}_j$, 我们根据 $v^{(i)}_j$ 在轨迹中出现的次数赋予其权值 $w(v^{(i)}_j)$. 将轨迹 $T^{(i)}$ 出现的地点 (将 $T^{(i)}$ 出现的地点的集合记为 $\mathcal{L}^{(i)}$) 看作 (离散) 随机变量 $X_{T^{(i)}}$, $X_{T^{(i)}}$ 出现在第 $j$ 个地点的概率 $p_{X_{T^{(i)}}}(j) = {w(v^{(i)}_j)}/{\sum_j {w(v^{(i)}_j)}}$, 则第 $m$ 条轨迹 $T^{(m)}$ 和第 $n$ 条轨迹 $T^{(n)}$ 的空间距离 $Distance_{space}(m,n)$ 可由 \ref{BhattacharyyaDis} 得到：
+\vspace{1.5mm}
+\begin{equation}
+\label{SpaceSimilarity}
+\begin{split}
+&Distance_{space}(m,n) = D_B(p_{X_{T^{(m)}}},p_{X_{T^{(n)}}}) \\ 
+where: & BC(p_{X_{T^{(m)}}},p_{X_{T^{(n)}}}) = \sum_{j \in \mathcal{L}^{(i)}} \sqrt{p_{X_{T^{(m)}}}(j) \cdot p_{X_{T^{(n)}}} (j)}
+\end{split}
+\end{equation}
+
+\vspace{2.5mm}
+\textbf{2. 轨迹时间相似度} 对于轨迹 $T^{(i)}$ 中的第 $j$ 个节点 $v^{(i)}_j$, 则访问这个节点的时间也可以看作随机变量，用 $Y_{v^{(i)}_j}$ 表示，简记为 $Y^{(i)}_{j}$。将 $Y^{(i)}_{j}$ 离散化后\footnote{我们以 10 分钟为时间单位对 $Y^{(i)}_{j}$ 进行离散化处理} (将所有时间段的集合记为 $\mathcal{P}$), 假设$Y^{(i)}_{j}$ 出现在第 $k$ 时间段内的次数为 $c (Y^{(i)}_{j|k})$ 则 $Y^{(i)}_{j}$ 出现在第 $k$ 时间段内的概率 $q_{Y^{(i)}_{j}}(k) = c(Y^{(i)}_{j|k}) / \sum_j c(Y^{(i)}_{j|k})$, 第 $m$ 条轨迹 $T^{(m)}$ 和第 $n$ 条轨迹 $T^{(n)}$ 的时间距离 $Distance_{time}(m,n)$ 可表示为：
+\vspace{1mm}
+\begin{equation}
+\label{TimeSimilarity}
+\begin{split}
+&Distance_{time}(m,n) = \frac{1}{N} \sum_{j=1}^N D_B(q_{Y^{(m)}_{j}},q_{Y^{(n)}_{j}}) \\
+where: & BC(q_{Y^{(m)}_{j}},q_{Y^{(n)}_{j}}) = \sum_{k \in \mathcal{P}} \sqrt{q_{Y^{(m)}_{j}} (k) \cdot q_{Y^{(n)}_{j}} (k)}
+\end{split}
+\end{equation}
+
+\vspace{2mm}
+轨迹 $T^{(m)}$ 和轨迹 $T^{(n)}$ 的距离 $Distance(m,n)$ 最终由上述两部分距离共同决定，即:
+\vspace{2mm}
+\begin{equation}
+\label{Distance}
+Distance(m,n) = Distance_{space} \times Distance_{time}
+\end{equation}
+\vspace{2mm}
+而 轨迹 $T^{(m)}$ 和轨迹 $T^{(n)}$ 的相似度 $S(m,n)$ 可以简单地由 $Distance(m,n)$ 得到：
+\vspace{2mm}
+\begin{equation}
+\label{Similarity}
+S(m,n) = \frac{1}{Distance(m,n)}
+\end{equation}
+\vspace{2mm}
+\section{实验}
+\label{simlarity:experiment}
+在这部分中，我们在北京市 24 辆出租车\footnote{这24辆出租车的轨迹来源于公开数据集 T-Drive, 第 \ref{chp:Experiments} 章有对这个数据集详细的说明}\citeup{yuan2011driving}的轨迹上测试了\ref{simlarity:similarity}节提出的轨迹相似度算法，即先将这 24 条轨迹用\ref{subsubsec:mapping}节中的方法映射到行为网络\footnote{划分区域时，经度范围：115.25-117.30, 纬度范围：39.27-41.03, 经度间隔 0.02， 纬度间隔 0.02}，之后根据公式 (\ref{SpaceSimilarity}) (\ref{TimeSimilarity}) (\ref{Distance}) (\ref{Similarity}) 计算这些出租车轨迹的相似度，结果见附录 \ref{Similarity:Result}。\par
+附录 \ref{Similarity:Result} 包含三张表格，分为为这 24 辆出租车轨迹的空间不相似度 (附录 \ref{Table:SpaceDistance}) 、时间不相似度 (附录 \ref{Table:TimeDistance}) 以及最终的不相似度 (附录 \ref{Table:TotalDistance}). 下面，我们随机选择一辆出租车，分析一下与它距离最远 (最不相似) 以及距离最近 (最相似) 的出租车的轨迹模式。\par
+例如我们观察第 1 辆出租车 (T-Drive 中编号为 366)，它和另外 23 辆出租车的距离分别为: 11.6, 11.1, 19.4, 16.4, 13.9, 11.7, 14.0, 10.9, 18.6, 12.6, 27.6, 21.9, 21.3, \textbf{6.1}, 24.1, 11.5, 14.5, 18.5, 18.5, 10.4, 7.9, 12.6, \textbf{38.8}. 与第一辆出租车行为模式最不相近的是第 24 辆出租车 (编号为9754)， 最相似的为第 15 辆车 (编号为 6275)。 第一辆出租车和其它出租车的空间距离 (公式\ref{SpaceSimilarity}) 分别为: 1.6, 1.4, 2.5, 1.9, 1.8, 1.4, 1.8, 1.4, 2.2, 1.6, 3.3, 2.8, 2.5, 0.9, 2.7, 1.5, 1.7, 2.1, 2.2, 1.5, 1.2, \textbf{0.6}, \textbf{4.1}. 其中与第 15 辆出租车的距离为 0.9 ，仅大于和第 23 辆出租车 0.6 的距离；它与第 24 辆出租车的空间距离为 4.1， 大于与其它车辆的距离。下面我们就来分析一下第 1 辆车与第 15 辆车、第 24 辆车的轨迹特征。\par
+
+\vspace{2mm}
+
+\pic[htbp]{出租车 1 的轨迹}{width=0.8\textwidth}{pics/ChapterSimilarity/taxi1}
+\pic[htbp]{出租车 15 的轨迹}{width=0.8\textwidth}{pics/ChapterSimilarity/taxi15}
+\pic[htbp]{出租车 24 的轨迹}{width=0.8\textwidth}{pics/ChapterSimilarity/taxi24}
+
+
+\vspace{2mm}
+这里，我们用 GPSPrune 可视化了第 1 辆、第 15 辆、第 24 辆出租车的轨迹，我们可以发现，第 1 辆车与第 15 辆车的轨迹有许多重合的区域，而与第 24 辆车的轨迹重合的区域很少，因此与第 15 辆车的空间距离较小 (相似度高)， 与第 24 辆车的空间距离较大 (相似度低)。\par
+对于第 24 辆车来说，它和其它每辆车的距离都比较大，见附录 \ref{Table:SpaceDistance}, \ref{Table:TimeDistance}, \ref{Table:TotalDistance}，这是由于第 24 辆车的主要活动区域并不在北京市，而其它车辆主要在北京市活动。
+
+\section{总结}
+\label{simlarity:conclusion}
+在这篇文章中，我们从空间信息和时间信息两个角度出发，考虑的轨迹的相似度度量。具体来说，我们首先将一个轨迹映射到一个行为网络上，并赋予行为网络一些属性使得它可以反映轨迹的时间特征和空间特征；之后，通过比较行为网络的反映了轨迹信息的属性来衡量轨迹之间的相似度。通过在出租车轨迹上的实验，进一步说明了上述方法可以放映出租车轨迹之间的相似程度。在第 \ref{chp:Experiments}章中，我们将以这个相似度指标为基础，完成这些出租车的聚类。
+
+
+
+
+
+
+
+

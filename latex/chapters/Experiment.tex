@@ -1,0 +1,30 @@
+% !Mode:: "TeX:UTF-8"
+
+\chapter{出租车GPS轨迹聚类分析}
+\label{chp:Experiments}
+之前，第\ref{chp:Similarity}章 和 第\ref{chp:Attractor}章 分别介绍了轨迹数据相似性度量以及图聚类算法 (\emph{Attractor}算法). 接下来，我们就利用这两个工作，对一些出租车的 GPS 轨迹进行聚类分析，其流程如下：利用第 \ref{chp:Similarity} 章中的方法确定出租车之间的相似度，通过给定一个阈值将这些 GPS 数据转化为相似网络\footnote{网络的节点是出租车，边代表出租车的距离}；之后利用 \ref{chp:Attractor} 中的 \emph{Attractor} 算法对这个相似网络进行聚类。在详细介绍聚类方法以及分析结果之前，首先来说明一下数据集。
+
+\section{数据集说明}
+关于轨迹数据\footnote{或是一般的含时行为数据}，公开的数据集非常少。这里，我们找到了 \emph{Yu Zheng} 等人在2011年发布的 T-Drive 轨迹数据集\citeup{yuan2011driving}\citeup{yuan2010t}的样例\footnote{\url{http://research.microsoft.com/apps/pubs/?id=152883}}。 这个数据集包含10,357辆出租车一周内的GPS采样数据。但是需要注意的是，这些出租车采样的点的数量并不一致，甚至数量相差很大 (例如编号为1131的出租车有94939个采样点，而编号为9424的出租车只有4393个采样点)。因此在这里，我们选用了 T-Drive 数据集第一个文件中的24辆出租车作为待测的轨迹数据，它们之间采样点数量之间的差异不至于非常大。
+
+\section{聚类方法说明}
+假设这 24 辆出租车 GPS 数据编号为： $1$, $2$, $\ldots$, $24$. 则对这些轨迹数据聚类过程可分为以下几步：
+\begin{enumerate}
+\item \textbf{计算这些轨迹之间的相似度} 利用\ref{subsubsec:mapping}节中的方法将轨迹映射为行为网络，之后根据\ref{subsubsec:computesimilarity}节中的公式 (\ref{SpaceSimilarity}) (\ref{TimeSimilarity}) (\ref{Distance}) 计算这些出租车轨迹两两之间的距离。为之后聚类做准备。
+\item \textbf{构建相似网络} 将每个轨迹对应于一个节点，给定一个距离的阈值 $\epsilon$ \footnote{在文章中，取阈值 $\epsilon$ 的值为 8}，若轨迹 $m$ 和轨迹 $n$ 的距离小于这个阈值 $\epsilon$ 时，则将 $m$ 和 $n$ 对应的节点相连，构建相似网络。
+\item \textbf{对轨迹进行聚类} 利用\ref{sec:algorithm}节中介绍的 \emph{Attractor} 算法对得到的相似网络进行聚类。
+\end{enumerate}
+
+\section{结果及讨论}
+这 24 辆出租车的距离结果如下：这 24 辆出租车一共被分成了 2 类，以及 5 个孤立点 (见图 \ref{pics/ChapterExperiment/network}). 图 \ref{pics/ChapterExperiment/network} 中不同颜色表示不同社团，其中，紫色社团中的节点彼此之间的联系非常紧密 (边很多)，说明这些节点代表的轨迹之间的距离很小，彼此非常相似。而不同颜色的节点之间边很少，说明这些节点对应的轨迹彼此的距离较远，相似度较小。
+
+\pic[htbp]{出租车轨迹聚类结果}{width=0.7\textwidth}{pics/ChapterExperiment/network}
+
+以上结果虽然只是对 24 辆出租车聚类的结果， 但这个案例展示了出租车轨迹数据聚类的流程。接下来，我们希望得到更多的数据集，在大规模的轨迹数据集上进行相似度以及聚类分析。
+
+
+
+
+
+
+

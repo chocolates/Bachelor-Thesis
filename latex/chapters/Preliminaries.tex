@@ -1,0 +1,124 @@
+% !Mode:: "TeX:UTF-8"
+
+\chapter{绪论}
+
+\section{引言－从数据中挖掘知识}
+科技的发展使得越来越多的各种各样的数据被产生、纪录、保存下来。我们希望通过对这些数据的研究，得到一些有用的信息，例如群体的行为模式、传染病的传播方式等等，进而帮助人们做出好的决策\citeup{aggarwal2013data}。因此，各种各样的方法被先后提出，来帮助人们发现数据中隐藏的有用的信息\citeup{han2006data}\citeup{witten2005data}。\par
+这篇文章中，我们将要介绍两个基础算法，并将这两个新的算法应用在实际数据中，从而尝试从数据中挖掘有用的知识。具体来说，在这篇文章中，我们以聚类分析为中心，以轨迹数据 (行为数据) 为应用对象，首先提出了度量轨迹之间相似度的方法，在此基础上，用一个新提出的聚类算法对这些轨迹进行聚类。但是，在具体介绍我们的工作之前，首先介绍一下聚类分析的背景以及流程。\par
+通常，从数据中学习知识包含以下流程\citeup{fayyad1996knowledge}\citeup{shao2011synchronization}：
+\begin{itemize}
+\item \hspace{2mm} \textbf{数据采集} 首先需要采集数据，包括确定数据种类、范围等
+\item \hspace{2mm} \textbf{数据预处理} 这个过程包括对原始数据的处理，包括数据整合、去除噪声等
+\item \hspace{2mm} \textbf{数据表示} 对数据进行完预处理后，需要决定数据合适表示，例如特征筛选等
+\item \hspace{2mm} \textbf{数据挖掘} 这个过程中，人们采用各种方法，例如聚类、分类、关联规则分析等方法来发掘数据中的有用的信息
+\item \hspace{2mm} \textbf{结果解释与评估} 最后，需要对得到的结果进行解释与评估，有可能需要重新进行挖掘
+\end{itemize}
+
+\vspace{2mm}
+其中，\textbf{数据挖掘}是从数据中学习知识的最关键的步骤，因此很多时候，数据挖掘泛指从数据中学习知识。数据挖掘主要包含以下方法：
+\begin{itemize}
+\item \hspace{2mm} \textbf{分类} 分类的目的是为新数据确定它的类别。一般来说，分类首先学习出目标函数，然后用学到的目标函数来预测新来的未知数据点的类别。
+\item \hspace{2mm} \textbf{聚类} 聚类的目的是将数据分为许多类，使得同一类中的数据非常相似，不相似的数据分布在不同的类中。常见的聚类方法有 \emph{k-means}, \emph{spectral clustering} 等方法。 
+\item \hspace{2mm} \textbf{关联规则分析} 关联规则分析的目的是从数据中发现经常出现的模式，一个经典的例子是人们从超市的大量销售记录中发现买尿布的人也常常买啤酒。经典的关联规则分析方法有：\emph{Apriori}\citeup{agrawal1994fast}, \emph{FP-growth}\citeup{han2000mining} 等。
+\item \hspace{2mm} \textbf{奇异点检测} 奇异点检测的目的是发现数据集中存在的奇异点 (与大多数点不相似的少数数据点)。
+\end{itemize}
+\vspace{2mm}
+
+聚类作为数据挖掘中一项关键手段，在许多领域都有重要的应用\citeup{jain1999data}。这篇文章主要关注数据挖掘中的聚类方法特别是图聚类 (社团挖掘)，针对现有的图聚类面临的一些挑战，本文提出了基于动态交互的新的社团挖掘方法，并且将聚类算法用于日益重要的轨迹数据，通过实验分析了出租车存在的常见模式。\par
+
+\section{研究背景与相关工作回顾}
+这一小节中，我们从轨迹分析以及聚类分析这两个方面回顾与这篇文章相关的研究背景以及相关工作。
+\subsection{轨迹分析介绍}
+随着移动设备的普及，越来越多的轨迹数据被记录和保存下来。从这些轨迹数据中，我们可以发现行为的特征以及模式，在轨迹中发现的有用信息可以帮助人们做出更好的决策\footnote{例如，通过研究道路上行人以及车辆的轨迹，交通部门可以更好地调节城市中交通；社交网络平台可以寻找与某个用户有相同出行模式的其它用户，进而更加精准地推荐好友等等}。因此，轨迹数据分析正在吸引越来越多的注意。对于这些轨迹数据，一个关键的问题是如何挖掘这些轨迹数据中的模式与规律。\par
+目前，许多算法借鉴关联规则分析中的频繁项挖掘的思想来挖掘轨迹中存在的模式\citeup{li2010swarm}\citeup{giannotti2007trajectory}。它们将轨迹挖掘看作在时间约束下的频繁项挖掘，进而找到轨迹中经常出现的模式。下面，简单地介绍一个经典的工作\citeup{giannotti2007trajectory}. \par
+在 2007 年的一篇文章中\citeup{giannotti2007trajectory}，作者将时间约束引入频繁项集挖掘来寻找轨迹中经常出现的模式。作者用含时序列\footnote{Temporally Annotated Sequences(TAS)}来表示轨迹 $T$: 
+\begin{equation*}
+T = s_0 \xrightarrow{\alpha_1} s_1 \xrightarrow{\alpha_2} \cdots \xrightarrow{\alpha_n} s_n
+\end{equation*}
+即 $T=(S,A)$, 其中空间序列 $S=<s_0,s_1,\ldots,s_n>$,时间序列 $A=<\alpha_1, \ldots, \alpha_n>$ 
+之后，作者首先定义了空间序列的包含 ($\preceq_N$)：对于空间序列 $S=<s_0,s_1,\ldots,s_n>$, 记另外一个含时序列 $T =<(x'_0,y'_0,t'_0),\ldots,(x'_n,y'_n,t'_n)>$, $N(x,y)$ 表示 $(x,y)$ 这个点的邻域，那么记 $S$ 被 $T$ 空间包含 ($S\preceq_N T$) 当且仅当存在 $0 \le i_0 < \cdots < i_k \le n$, 使得对 $\forall 0 \le j \le k$, $(x_j,y_j)\in N(x'_{i_j},y'_{i_j})$.
+
+含时序列的 ``包含'' ($\preceq_{N,\tau}$): 对于一个含时序列 $T$, 给定一个时间范围的阈值 $\tau$, 那么对于一个给定的含时序列 $(S,A) = (x_0,y_0) \xrightarrow{\alpha_1} (x_1,y_1) \xrightarrow{\alpha_2} \cdots \xrightarrow{\alpha_n} (x_k,y_k)$ 和另外一个含时序列 $T' =<(x'_0,y'_0,t'_0),\ldots,(x'_n,y'_n,t'_n)>$, 定义 $(S,A)$ 被 $T'$ 包含 ($(S,A) \preceq_{N,\tau} T$) 当且仅当 $(S,A)$ 和 $T'$ 满足以下两个条件：
+\begin{enumerate}
+\item $S\preceq_N T'$
+\item $\forall 1 \le j \le k, |\alpha_j-\alpha'_j| \le \tau$, 其中 $\alpha'_j = t'_j-t'_{j-1}$
+\end{enumerate}
+
+\pic[htbp]{含时序列``包含''示意图，图片来自\cite{giannotti2007trajectory}}{width=0.6\textwidth}{pics/ChapterIntroduction/TAS}
+
+
+于是对于每一条轨迹模式，我们就可以计算它在数据集中的支持度，因此挖掘这个轨迹数据集中常见模式的问题就转化为了频繁项挖掘的问题，进而作者使用类似 \emph{FP-growth}\citeup{han2000mining} 的算法来处理，这里不再具体描述。
+
+
+
+\subsection{聚类分析介绍}
+下面将要介绍聚类分析的基本流程，包括对象之间相似度度量、聚类算法和结果分析检验等，并且回顾了现有的相关工作。\par
+\vspace{2mm}
+对于给定的数据集，聚类分析的目的是将相似的对象分到一类，不相似的对象分到不同类。为了衡量对象之间的相似性，首先需要定义给定数据集中各个对象的相似度指标或是距离。两个物体之间的相似度越高，那么它们之间的距离则越近，如果两个物体之间的相似度低，那么他们距离则远。\par
+许多数据可由由 $n$ 维空间中的向量表示，对于这类数据，常常可以用 $n$ 维空间的距离函数来刻画对象与对象之间的距离，常见的距离函数有：欧式距离、 $L_p$范数、曼哈顿距离等。假如距离函数 $dist()$ 选用 $L_p$ 范数，则对于给定数据集 $D$ 中的两个 $n$ 维向量 $x={x_1,x_2,\ldots,x_n}$ 和 $y={y_1,y_2,\ldots,y_n}$， $x$ 和 $y$ 之间的距离 $dist(x,y)$ 可以表示为：
+\begin{equation}
+dist(x,y) = \sqrt[p]{\sum_{i=1}^d {(x_i-y_i)^p}}
+\end{equation}
+对于复杂的数据类型，例如神经纤维\citeup{shao2011synchronization}、行为轨迹等等， 由于 $n$ 维空间中的矢量并不能有效地表示这些对象，因此度量这些对象之间的相似度并不是一件简单的工作。例如后文中，为了对轨迹进行聚类，我们提出了度量轨迹相似度的一个指标，相关的距离指标的回顾见\ref{simlarity:relatedwork}. \par
+
+\vspace{2mm}
+确定对象之间的相似度之后，需要用聚类算法对这些对象进行聚类。常见的聚类算法有： \emph{k-means}, \emph{DBSCAN}, \emph{Spectral Clustering}, 以及用于图聚类 (社团挖掘) 的 \emph{Ncut}, \emph{Louvain} 和 \emph{MCL} 等. 在\ref{chp:Attractor}章中的 \ref{sec:relatedwork} 小节中，我们将会详细介绍与本文关系密切的经典的图聚类算法。\par
+\vspace{2mm}
+完成聚类之后，还需要对结果进行检验和解释。对于有标签的数据\footnote{已经知道数据集的类信息}，经典的衡量聚类结果的指标有： $NMI$, $ARI$ 和 $Purity$\footnote{\url{http://nlp.stanford.edu/IR-book/html/htmledition/evaluation-of-clustering-1.html}}. 例如，假设数据集有 $N$ 个对象， 用 $X={x_1,x_2,\ldots,x_N}$ 表示用算法得到的这些对象的类别 ($x_i$ 代表第 $i$ 个对象的类别)， $Y={y_1,y_2,\ldots,y_N}$ 表示得到的这些对象的真实标签，那么得到的结果的 $NMI$ 指标为：
+
+ \begin{equation}
+\mbox{NMI}(X , Y)
+= 
+\frac{
+I(X ; Y)
+}
+{
+[H(X)+ H(Y)]/2
+}
+\end{equation}
+其中
+\begin{equation*}
+\begin{split}
+I( X ; Y )
+&=
+\sum_k \sum_j     P(x_k \cap y_j) \log
+\frac{P(x_k \cap y_j)}{P(x_k)P(y_j)}\\
+&=
+\sum_k \sum_j     \frac{|x_k \cap y_j|}{N} \log
+\frac{N|x_k \cap y_j|}{|x_k||y_j|}
+\end{split}
+\end{equation*}
+
+\begin{equation*}
+\begin{split}
+H(X) &= -\sum_k P(x_k) \log P(x_k)\\
+&= -\sum_k \frac{|x_k|}{N} \log \frac{|x_k|}{N}
+\end{split}
+\end{equation*}
+
+
+\vspace{2mm}
+以上就是聚类分析的整体流程，在后文中，为了完成轨迹数据的聚类分析，我们将首先定义针对轨迹数据的相似度指标，在此基础上将轨迹聚类问题转化为了图聚类问题；然后利用提出的 \emph{Attractor} 算法完成了对轨迹数据的聚类。
+
+% \subsection{聚类算法目前面临的挑战}
+
+% \section{轨迹分析回顾}
+
+\section{本文组织结构与章节安排}
+这篇文章的核心工作是提出了轨迹数据的相似度衡量指标(\ref{chp:Similarity}章)，以及提出了一个新的社团挖掘 (图聚类) 算法(\ref{chp:Attractor}章)。之后在第\ref{chp:Experiments}章中，我们将相似度度量以及图聚类这两个算法应用于出租车轨迹数据上，完成了对轨迹数据的聚类。具体章节安排如下：
+\begin{enumerate}
+\item \hspace{2mm} 第一章主要介绍了研究背景，包括数据挖掘的有关概念和这篇文章的研究背景及相关工作回顾，并介绍了文章的组织结构
+\item \hspace{2mm} 第二章主要提出了一个衡量轨迹数据相似度的方法，并在出租车数据集，分析了用这个相似度指标得到的结果
+\item \hspace{2mm} 第三章介绍了一个新的图聚类算法，并且通过大量的与经典算法的实验，展示了我们的算法的优势
+\item \hspace{2mm} 第四章展示了轨迹聚类的结果，具体来说，在这一章中，对于一个出租车数据集，我们首先用第二章中的方法计算得到它们之间的相似度，在此基础上，将第三章中的聚类方法应用于这些数据，完成了对出租车的聚类。
+\item \hspace{2mm} 第五章总结了这篇文章的主要工作，并以此为基础，对接下来的工作进行了展望。
+\end{enumerate}
+
+
+
+
+
+
+
+
+

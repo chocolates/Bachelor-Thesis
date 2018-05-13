@@ -1,0 +1,58 @@
+\contentsline {chapter}{\numberline {第1\ignorespaces 章\hspace {0.3em}}绪论}{1}{chapter.1}
+\contentsline {section}{\numberline {1.1}引言－从数据中挖掘知识}{1}{section.1.1}
+\contentsline {section}{\numberline {1.2}研究背景与相关工作回顾}{2}{section.1.2}
+\contentsline {subsection}{\numberline {1.2.1}轨迹分析介绍}{2}{subsection.1.2.1}
+\contentsline {subsection}{\numberline {1.2.2}聚类分析介绍}{3}{subsection.1.2.2}
+\contentsline {section}{\numberline {1.3}本文组织结构与章节安排}{5}{section.1.3}
+\contentsline {chapter}{\numberline {第2\ignorespaces 章\hspace {0.3em}}轨迹数据相似度度量}{6}{chapter.2}
+\contentsline {section}{\numberline {2.1}基本思想与主要贡献}{7}{section.2.1}
+\contentsline {subsection}{\numberline {2.1.1}基本思想}{7}{subsection.2.1.1}
+\contentsline {subsection}{\numberline {2.1.2}主要贡献}{8}{subsection.2.1.2}
+\contentsline {section}{\numberline {2.2}相关工作回顾}{8}{section.2.2}
+\contentsline {subsection}{\numberline {2.2.1}基于动态时间规整的相似度度量}{9}{subsection.2.2.1}
+\contentsline {subsection}{\numberline {2.2.2}基于最长共同子串的相似度度量}{10}{subsection.2.2.2}
+\contentsline {subsection}{\numberline {2.2.3}基于最小编辑距离的相似度度量}{10}{subsection.2.2.3}
+\contentsline {section}{\numberline {2.3}基于行为网络的轨迹相似度度量}{11}{section.2.3}
+\contentsline {subsection}{\numberline {2.3.1}准备工作}{11}{subsection.2.3.1}
+\contentsline {subsection}{\numberline {2.3.2}基于行为网络的轨迹相似度度量}{12}{subsection.2.3.2}
+\contentsline {subsubsection}{\numberline {2.3.2.1}将轨迹映射到行为网络}{12}{subsubsection.2.3.2.1}
+\contentsline {subsubsection}{\numberline {2.3.2.2}行为网络相似度比较}{13}{subsubsection.2.3.2.2}
+\contentsline {section}{\numberline {2.4}实验}{14}{section.2.4}
+\contentsline {section}{\numberline {2.5}总结}{16}{section.2.5}
+\contentsline {chapter}{\numberline {第3\ignorespaces 章\hspace {0.3em}}基于动态交互的社团挖掘算法}{17}{chapter.3}
+\contentsline {section}{\numberline {3.1}基本思想与主要贡献}{18}{section.3.1}
+\contentsline {subsection}{\numberline {3.1.1}基本思想}{18}{subsection.3.1.1}
+\contentsline {subsection}{\numberline {3.1.2}主要贡献}{18}{subsection.3.1.2}
+\contentsline {section}{\numberline {3.2}相关工作回顾}{19}{section.3.2}
+\contentsline {section}{\numberline {3.3}基于动态交互的社团挖掘算法}{20}{section.3.3}
+\contentsline {subsection}{\numberline {3.3.1}准备工作}{20}{subsection.3.3.1}
+\contentsline {subsection}{\numberline {3.3.2}交互模型}{20}{subsection.3.3.2}
+\contentsline {subsection}{\numberline {3.3.3}Attractor 算法}{23}{subsection.3.3.3}
+\contentsline {subsubsection}{\numberline {3.3.3.1}Attractor 算法}{23}{subsubsection.3.3.3.1}
+\contentsline {subsubsection}{\numberline {3.3.3.2}对耦合参数 $\lambda $ 的讨论}{24}{subsubsection.3.3.3.2}
+\contentsline {subsection}{\numberline {3.3.4}时间复杂度分析}{24}{subsection.3.3.4}
+\contentsline {section}{\numberline {3.4}实验}{25}{section.3.4}
+\contentsline {subsection}{\numberline {3.4.1}人工数据集上的对比试验}{25}{subsection.3.4.1}
+\contentsline {subsubsection}{\numberline {3.4.1.1}改变噪声边比例}{26}{subsubsection.3.4.1.1}
+\contentsline {subsubsection}{\numberline {3.4.1.2}改变网络稀疏度}{26}{subsubsection.3.4.1.2}
+\contentsline {subsection}{\numberline {3.4.2}真实数据集上的对比试验}{27}{subsection.3.4.2}
+\contentsline {subsubsection}{\numberline {3.4.2.1}社团结构已知的网络}{27}{subsubsection.3.4.2.1}
+\contentsline {subsubsection}{\numberline {3.4.2.2}社团结构未知的网络}{29}{subsubsection.3.4.2.2}
+\contentsline {subsection}{\numberline {3.4.3}社团规模分布和噪声点检测}{30}{subsection.3.4.3}
+\contentsline {subsubsection}{\numberline {3.4.3.1}社团规模比较}{30}{subsubsection.3.4.3.1}
+\contentsline {subsubsection}{\numberline {3.4.3.2}噪声点检测}{31}{subsubsection.3.4.3.2}
+\contentsline {subsection}{\numberline {3.4.4}时间复杂度测试}{31}{subsection.3.4.4}
+\contentsline {section}{\numberline {3.5}总结}{32}{section.3.5}
+\contentsline {chapter}{\numberline {第4\ignorespaces 章\hspace {0.3em}}出租车GPS轨迹聚类分析}{34}{chapter.4}
+\contentsline {section}{\numberline {4.1}数据集说明}{34}{section.4.1}
+\contentsline {section}{\numberline {4.2}聚类方法说明}{34}{section.4.2}
+\contentsline {section}{\numberline {4.3}结果及讨论}{35}{section.4.3}
+\contentsline {chapter}{\numberline {第5\ignorespaces 章\hspace {0.3em}}结语}{36}{chapter.5}
+\contentsline {section}{\numberline {5.1}本文工作总结}{36}{section.5.1}
+\contentsline {section}{\numberline {5.2}下一步工作}{37}{section.5.2}
+\contentsline {chapter}{参考文献}{38}{section*.26}
+\contentsline {chapter}{致\kern .5em 谢}{41}{section*.29}
+\contentsline {chapter}{\numberline {附录\nobreakspace {}A\hspace {0.3em}}Attractor 算法}{42}{appendix.A}
+\contentsline {section}{\numberline {A.1}Attractor 算法伪代码标示}{42}{section.A.1}
+\contentsline {chapter}{\numberline {附录\nobreakspace {}B\hspace {0.3em}}轨迹相似度度量}{43}{appendix.B}
+\contentsline {section}{\numberline {B.1}出租车轨迹相似度完整结果}{43}{section.B.1}
